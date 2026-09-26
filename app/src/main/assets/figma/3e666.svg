@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="clock">
+<circle id="clock-face" cx="11" cy="11" r="9" stroke="#6B7280" stroke-width="1.8"/>
+<line id="minute-hand" x1="11.9" y1="5.1" x2="10.11" y2="10.1" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"/>
+<line id="hour-hand" x1="11.9" y1="10.1" x2="14.1" y2="10.11" stroke="#6B7280" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+</svg>
