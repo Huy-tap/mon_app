@@ -37,7 +37,7 @@ enum class BottomTab(val title: String) {
 }
 @Composable fun Label(text: String, size: Int = 14, bold: Boolean = false, muted: Boolean = false, modifier: Modifier = Modifier, color: Color = Color.Unspecified) {
     Text(text, modifier, color = if (color != Color.Unspecified) color else if (muted) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
-        fontSize = size.sp, letterSpacing = 0.sp, lineHeight = (size * 1.4).sp, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
+        fontSize = size.sp, fontFamily = LocalTextStyle.current.fontFamily, letterSpacing = 0.sp, lineHeight = (size * 1.4).sp, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
 }
 @Composable fun FigmaIcon(file: String, modifier: Modifier = Modifier.size(24.dp)) {
     val context = LocalContext.current
@@ -58,12 +58,15 @@ enum class BottomTab(val title: String) {
             if (selectedTab == BottomTab.EXERCISES) "c6120.svg" else "2f6cd.svg",
             if (selectedTab == BottomTab.HISTORY) "16b4a.svg" else "74755.svg", "ee2a5.svg", "1519d.svg")
     }
-    Surface(color = MaterialTheme.colorScheme.surface) {
+    Surface(color = if (dark) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface) {
         Row(Modifier.fillMaxWidth().navigationBarsPadding().heightIn(min = 64.dp), verticalAlignment = Alignment.CenterVertically) {
             BottomTab.entries.forEachIndexed { index, tab ->
                 Column(Modifier.weight(1f).selectable(selectedTab == tab, onClick = { onTabSelected(tab) }, role = Role.Tab).padding(vertical = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    FigmaIcon(files[index], Modifier.size(24.dp))
+                    Box(Modifier.width(54.dp).height(30.dp).background(
+                        if (dark && selectedTab == tab) Color(0xFF4F378B) else Color.Transparent, RoundedCornerShape(16.dp)), Alignment.Center) {
+                        FigmaIcon(files[index], Modifier.size(22.dp))
+                    }
                     Label(tab.title, 11, selectedTab == tab, color = if (selectedTab == tab) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -71,13 +74,17 @@ enum class BottomTab(val title: String) {
     }
 }
 @Composable fun Page(title: String, onBack: (() -> Unit)? = null, tab: BottomTab? = null, onTab: (BottomTab) -> Unit = {},
-    action: (@Composable RowScope.() -> Unit)? = null, footer: (@Composable () -> Unit)? = null, content: @Composable (PaddingValues) -> Unit) {
+    action: (@Composable RowScope.() -> Unit)? = null, footer: (@Composable () -> Unit)? = null,
+    titleSize: Int? = null, roundBack: Boolean = false, content: @Composable (PaddingValues) -> Unit) {
     Scaffold(containerColor = MaterialTheme.colorScheme.background,
         topBar = { Row(Modifier.fillMaxWidth().statusBarsPadding().heightIn(min = 64.dp).padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
             if (onBack != null) {
-                Box(Modifier.size(24.dp, 48.dp).clickable(onClick = onBack).semantics { contentDescription = "Quay lại" }, contentAlignment = Alignment.CenterStart) { Label("‹", 28) }
+                if (roundBack) {
+                    Box(Modifier.size(40.dp).background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(20.dp)).clickable(onClick = onBack).semantics { contentDescription = "Quay lại" }, contentAlignment = Alignment.Center) { FigmaIcon("arrowleft.svg", Modifier.size(24.dp)) }
+                    Spacer(Modifier.width(16.dp))
+                } else Box(Modifier.size(24.dp, 48.dp).clickable(onClick = onBack).semantics { contentDescription = "Quay lại" }, contentAlignment = Alignment.CenterStart) { Label("‹", 28) }
             }
-            Label(title, when (title) { "Nhắc nhở tập luyện" -> 20; "Nhập kết quả", "Sửa kết quả", "Thêm bài tập", "Sửa bài tập" -> 22; else -> 24 }, true, modifier = Modifier.weight(1f))
+            Label(title, titleSize ?: when (title) { "Nhắc nhở tập luyện" -> 20; "Nhập kết quả", "Sửa kết quả", "Thêm bài tập", "Sửa bài tập" -> 22; else -> 24 }, true, modifier = Modifier.weight(1f))
             action?.invoke(this)
         } }, bottomBar = {
             if (tab != null) FitnessBottomNavigation(tab, onTab)
@@ -86,20 +93,22 @@ enum class BottomTab(val title: String) {
             }
         }, content = content)
 }
-@Composable fun Panel(modifier: Modifier = Modifier, border: Boolean = true, padding: Int = 14, content: @Composable ColumnScope.() -> Unit) {
-    Surface(modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surface,
+@Composable fun Panel(modifier: Modifier = Modifier, border: Boolean = true, padding: Int = 14, radius: Int = 12, content: @Composable ColumnScope.() -> Unit) {
+    Surface(modifier.fillMaxWidth(), shape = RoundedCornerShape(radius.dp), color = MaterialTheme.colorScheme.surface,
         border = if (border) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant) else null) {
         Column(Modifier.padding(padding.dp), content = content)
     }
 }
-@Composable fun PrimaryButton(text: String, enabled: Boolean = true, onClick: () -> Unit) {
-    Button(onClick, Modifier.fillMaxWidth().height(48.dp), enabled = enabled, shape = RoundedCornerShape(12.dp),
-        contentPadding = PaddingValues(horizontal = 12.dp), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+@Composable fun PrimaryButton(text: String, enabled: Boolean = true, radius: Int = 12, height: Int = 48,
+    color: Color = MaterialTheme.colorScheme.primary, onClick: () -> Unit) {
+    Button(onClick, Modifier.fillMaxWidth().heightIn(min = height.dp), enabled = enabled, shape = RoundedCornerShape(radius.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp), colors = ButtonDefaults.buttonColors(containerColor = color,
+            contentColor = if (color == MaterialTheme.colorScheme.primary) MaterialTheme.colorScheme.onPrimary else Color.White)) {
         Text(text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }
 }
-@Composable fun MonthSelector(month: YearMonth, onChange: (YearMonth) -> Unit) {
-    var choose by remember { mutableStateOf(false) }
+@Composable fun MonthSelector(month: YearMonth, onChange: (YearMonth) -> Unit, bottomSheet: Boolean = false) {
+    var choose by rememberSaveable { mutableStateOf(false) }
     Panel(padding = 0) {
         Row(Modifier.fillMaxWidth().height(48.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { onChange(month.minusMonths(1)) }, modifier = Modifier.semantics { contentDescription = "Tháng trước" }) { FigmaIcon("8c2e3.svg", Modifier.size(18.dp)) }
@@ -109,7 +118,8 @@ enum class BottomTab(val title: String) {
             IconButton(onClick = { onChange(month.plusMonths(1)) }, modifier = Modifier.semantics { contentDescription = "Tháng sau" }) { FigmaIcon("ba9dd.svg", Modifier.size(18.dp)) }
         }
     }
-    if (choose) {
+    if (choose && bottomSheet) MonthPickerSheet(month, { choose = false }) { onChange(it); choose = false }
+    if (choose && !bottomSheet) {
         var year by remember { mutableIntStateOf(month.year) }
         AlertDialog(onDismissRequest = { choose = false }, title = { Label("Chọn tháng", 20, true) }, text = {
             Column {

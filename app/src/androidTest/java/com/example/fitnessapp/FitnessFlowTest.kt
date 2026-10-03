@@ -96,4 +96,30 @@ class FitnessFlowTest {
         waitText("Flow Squat")
         compose.runOnIdle { assertEquals(2, controller.getAllExercises().size) }
     }
+    @Test fun statsRetryReadsDatabaseAgainAfterARealReadFailure() {
+        compose.runOnIdle { db.execSQL("ALTER TABLE workouts RENAME TO workouts_unavailable") }
+        click("Thống kê"); waitText("Lỗi tải dữ liệu")
+        compose.onNodeWithText("Buổi tập").assertDoesNotExist()
+        compose.runOnIdle { db.execSQL("ALTER TABLE workouts_unavailable RENAME TO workouts") }
+        click("Thử lại"); waitText("Chưa có dữ liệu tập luyện trong tháng này")
+        click("Bắt đầu tập luyện"); waitText("Ghi nhận buổi tập")
+    }
+    @Test fun reminderSaveReopenAndThemeUseSQLite() {
+        click("Cài đặt"); click("🌙 Tối")
+        compose.waitUntil(10000) { controller.getState("dark_theme") == "true" }
+        click("Thiết lập lịch nhắc"); click("Theo tuần")
+        compose.onNodeWithTag("day/1").performScrollTo().performClick()
+        compose.onNodeWithTag("day/5").performScrollTo().performClick()
+        click("Lưu cài đặt"); waitText("Đã lưu cài đặt")
+        compose.runOnIdle { assertEquals("1,5", controller.getPrimaryReminder().repeatDays) }
+        compose.onNodeWithContentDescription("Quay lại").performClick()
+        click("Thiết lập lịch nhắc")
+        compose.onNodeWithTag("day/1").assertIsSelected()
+        compose.onNodeWithTag("day/5").assertIsSelected()
+        click("Hằng ngày"); click("Lưu cài đặt"); waitText("Đã lưu cài đặt")
+        compose.runOnIdle {
+            assertEquals("DAILY", controller.getPrimaryReminder().repeatType)
+            db.rawQuery("SELECT COUNT(*) FROM reminders", null).use { it.moveToFirst(); assertEquals(1, it.getInt(0)) }
+        }
+    }
 }

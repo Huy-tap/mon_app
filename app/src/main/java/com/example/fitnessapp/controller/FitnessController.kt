@@ -110,18 +110,25 @@ class FitnessController(private val database: SQLiteDatabase) {
     }
     fun getPrimaryReminder(): Reminder = database.rawQuery("SELECT * FROM reminders ORDER BY reminder_id LIMIT 1", null).use { c ->
         if (c.moveToFirst()) Reminder(c.long("reminder_id"), c.text("title"), c.text("message"), c.text("reminder_time"),
-            c.text("repeat_type"), c.number("is_enabled") == 1, c.text("repeat_days"), c.text("scheduled_date")) else Reminder()
+            c.text("repeat_type"), c.number("is_enabled") == 1, c.text("repeat_days"), c.text("scheduled_date"), c.long("schedule_revision")) else Reminder()
     }
     fun saveReminder(r: Reminder) {
-        java.time.LocalTime.parse(r.reminderTime)
-        require(r.repeatType != "WEEKLY" || !r.repeatDays.isNullOrBlank()) { "Chọn ít nhất một ngày trong tuần." }
+        require(reminderError(r) == null) { reminderError(r)!! }
+        database.beginTransaction()
+        try {
+        val current = getPrimaryReminder()
         val v = ContentValues().apply {
-            put("title", r.title); put("message", r.message); put("reminder_time", r.reminderTime)
-            put("repeat_type", r.repeatType); put("repeat_days", if (r.repeatType == "WEEKLY") r.repeatDays else null)
+            put("title", r.title); put("message", r.message)
+            put("reminder_time", java.time.LocalTime.parse(r.reminderTime).format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")))
+            put("repeat_type", r.repeatType); put("repeat_days", if (r.repeatType == "WEEKLY") reminderDays(r.repeatDays).sorted().joinToString(",") else null)
             put("scheduled_date", if (r.repeatType == "ONCE") r.scheduledDate else null); put("is_enabled", if (r.isEnabled) 1 else 0)
+            put("schedule_revision", current.revision + 1)
+            put("updated_at", java.time.LocalDateTime.now().toString())
         }
-        if (r.id == 0L) database.insertOrThrow("reminders", null, v)
-        else check(database.update("reminders", v, "reminder_id = ?", arrayOf(r.id.toString())) > 0)
+        if (current.id == 0L) database.insertOrThrow("reminders", null, v)
+        else check(database.update("reminders", v, "reminder_id = ?", arrayOf(current.id.toString())) > 0)
+        database.setTransactionSuccessful()
+        } finally { database.endTransaction() }
     }
     fun getState(key: String): String? = database.rawQuery("SELECT state_value FROM app_state WHERE state_key = ?", arrayOf(key)).use {
         if (it.moveToFirst()) it.getString(0) else null

@@ -72,7 +72,7 @@ class FitnessPersistenceTest {
         val id = controller.insertExercise(exercise())
         controller.saveWorkout(WorkoutDraft(LocalDate.now().withDayOfMonth(1).minusDays(1).toString(), listOf(entry(id))))
         assertEquals(MonthlyStats(), controller.getMonthlyStats(YearMonth.now()))
-        assertEquals(1, controller.getMonthlyStats(YearMonth.now().minusMonths(1)).completedSets)
+        assertEquals(1, controller.getMonthlyStats(YearMonth.now().minusMonths(1)).completedExercises)
     }
     @Test fun timeTrackedExercisesKeepSecondsAndNullReps() {
         val id = controller.insertExercise(exercise().copy(trackingType = "TIME", defaultReps = 0, defaultDurationSeconds = 30))
@@ -100,5 +100,30 @@ class FitnessPersistenceTest {
         controller.insertExercise(exercise())
         assertThrows(SQLiteConstraintException::class.java) { controller.insertExercise(exercise()) }
         assertEquals(1, controller.getAllExercises().size)
+    }
+    @Test fun staleZeroIdUpdatesPrimaryAndInvalidDaysDoNotChangeSavedSchedule() {
+        controller.saveReminder(Reminder(isEnabled = true, repeatType = "WEEKLY", repeatDays = "MON,WED,FRI", reminderTime = "07:00"))
+        val first = controller.getPrimaryReminder()
+        controller.saveReminder(Reminder(isEnabled = true, reminderTime = "08:15:00"))
+        val edited = controller.getPrimaryReminder()
+        assertEquals(first.id, edited.id)
+        assertEquals(first.revision + 1, edited.revision)
+        db.rawQuery("SELECT COUNT(*) FROM reminders", null).use { it.moveToFirst(); assertEquals(1, it.getInt(0)) }
+        assertThrows(IllegalArgumentException::class.java) { controller.saveReminder(edited.copy(repeatType = "WEEKLY", repeatDays = "0,8,no")) }
+        assertEquals(edited, controller.getPrimaryReminder())
+    }
+    @Test fun onceAndAdditiveMigrationPreserveConfiguration() {
+        controller.saveReminder(Reminder(repeatType = "ONCE", scheduledDate = "2027-01-01", reminderTime = "07:05", isEnabled = true))
+        val before = controller.getPrimaryReminder()
+        assertEquals("07:05:00", before.reminderTime)
+        FitnessDatabase.migrate(db); FitnessDatabase.migrate(db)
+        db.close(); db = SQLiteDatabase.openDatabase(file.path, null, SQLiteDatabase.OPEN_READWRITE)
+        controller = FitnessController(db)
+        assertEquals(before, controller.getPrimaryReminder())
+    }
+    @Test fun eachWorkoutRoundsSecondsBeforeMonthlySumAndSameDayCountsTwice() {
+        val id = controller.insertExercise(exercise())
+        repeat(2) { controller.saveWorkout(WorkoutDraft(entries = listOf(entry(id).copy(durationSeconds = 61)))) }
+        assertEquals(MonthlyStats(2, 4, 2), controller.getMonthlyStats())
     }
 }
