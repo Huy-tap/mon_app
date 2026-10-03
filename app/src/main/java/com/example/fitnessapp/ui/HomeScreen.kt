@@ -49,7 +49,7 @@ import java.util.Locale
                 Label("Tháng ${today.monthValue} của bạn", 17, true)
                 Panel(border = false, padding = 12) {
                     Row(Modifier.fillMaxWidth()) {
-                        listOf(stats.totalWorkouts to "Buổi tập", stats.totalMinutes to "Phút tập", stats.completedExercises to "Lượt bài xong").forEach { (n, title) ->
+                        listOf(stats.totalWorkouts to "Buổi tập", stats.totalMinutes to "Phút tập", stats.completedSets to "Lượt bài xong").forEach { (n, title) ->
                             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                                 Label(n.toString().padStart(2, '0'), 24, true); Label(title, 12)
                             }

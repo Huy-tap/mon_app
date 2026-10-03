@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="16dp">
+<LinearLayout android:id="@+id/ex_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="104dp" android:padding="12dp" android:gravity="center_vertical" android:background="@drawable/ex_card" android:clickable="true" android:focusable="true">
+<FrameLayout android:layout_width="68dp" android:layout_height="68dp" android:background="@drawable/ex_photo" android:clipToOutline="true">
+<ImageView android:id="@+id/ex_thumb" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitCenter" android:contentDescription="Ảnh hướng dẫn"/>
+<TextView android:id="@+id/ex_placeholder" style="@style/ExText" android:text="—" android:layout_height="match_parent" android:gravity="center" android:textSize="12sp" android:textColor="?attr/exMuted"/></FrameLayout>
+<LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginLeft="14dp" android:orientation="vertical">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical"><TextView android:id="@+id/ex_name" style="@style/ExText" android:text="" android:layout_width="0dp" android:layout_weight="1" android:textSize="16sp" android:lineHeight="22sp" android:textStyle="bold"/><TextView android:id="@+id/ex_chevron" style="@style/ExText" android:text="›" android:layout_width="wrap_content" android:textSize="18sp"/></LinearLayout><Space android:layout_width="1dp" android:layout_height="4dp"/>
+<TextView android:id="@+id/ex_summary" style="@style/ExText" android:text="" android:textSize="13sp" android:lineHeight="18sp"/></LinearLayout></LinearLayout></LinearLayout>

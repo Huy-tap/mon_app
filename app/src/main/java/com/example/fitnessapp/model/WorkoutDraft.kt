@@ -29,13 +29,13 @@ object FitnessRules {
         else -> null
     }
     fun monthStats(workouts: List<Workout>, month: YearMonth): MonthlyStats {
-        val selected = workouts.filter { YearMonth.from(LocalDate.parse(it.workoutDate)) == month }
+        val selected = workouts.filter { it.workoutDate.startsWith(month.toString()) }
         return MonthlyStats(selected.size, selected.sumOf { it.durationMinutes }, selected.sumOf { w ->
             w.items.count { it.sets.isNotEmpty() && it.sets.all { s -> s.completed } }
         })
     }
     fun weeklyCounts(workouts: List<Workout>, month: YearMonth): List<Int> = (0..3).map { week ->
-        workouts.count { YearMonth.from(LocalDate.parse(it.workoutDate)) == month &&
+        workouts.count { it.workoutDate.startsWith(month.toString()) &&
             ((LocalDate.parse(it.workoutDate).dayOfMonth - 1) / 7).coerceAtMost(3) == week }
     }
 }

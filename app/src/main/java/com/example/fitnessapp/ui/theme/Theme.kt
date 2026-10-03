@@ -6,14 +6,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-
-private tailrec fun Context.activity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.activity()
-    else -> null
-}
 
 @Composable
 fun FitnessAppTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
@@ -27,7 +19,7 @@ fun FitnessAppTheme(darkTheme: Boolean = false, content: @Composable () -> Unit)
         onSurfaceVariant = Color(0xFF6B7280), outlineVariant = Color(0xFFE5E7EB), secondary = Color(0xFF2563EB)
     )
     val view = LocalView.current
-    SideEffect { view.context.activity()?.let { activity ->
+    SideEffect { (view.context as? Activity)?.let { activity ->
         WindowCompat.getInsetsController(activity.window, view).apply {
             isAppearanceLightStatusBars = !darkTheme
             isAppearanceLightNavigationBars = !darkTheme

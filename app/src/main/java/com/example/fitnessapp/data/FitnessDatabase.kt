@@ -48,7 +48,6 @@ object FitnessDatabase {
                 if (name !in columns) database.execSQL("ALTER TABLE $table ADD COLUMN $name $definition")
             }
             addColumn("exercises", "is_archived", "INTEGER NOT NULL DEFAULT 0")
-            addColumn("reminders", "schedule_revision", "INTEGER NOT NULL DEFAULT 0")
             addColumn("workout_exercises", "duration_seconds", "INTEGER NOT NULL DEFAULT 0")
             addColumn("workout_exercises", "exercise_name", "TEXT")
             addColumn("workout_exercises", "muscle_group", "TEXT")

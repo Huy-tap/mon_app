@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/ex_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="?attr/exBackground">
+<LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:paddingLeft="20dp" android:paddingRight="20dp" android:gravity="center_vertical">
+<TextView android:id="@+id/ex_back" style="@style/ExText" android:text="‹" android:layout_width="24dp" android:layout_height="48dp" android:textSize="28sp" android:gravity="center_vertical" android:contentDescription="Quay lại" android:clickable="true" android:focusable="true"/>
+<TextView android:id="@+id/ex_title" style="@style/ExText" android:text="Bài tập" android:layout_width="0dp" android:layout_weight="1" android:textSize="24sp" android:textStyle="bold" android:lineHeight="34sp"/>
+</LinearLayout>
+<FrameLayout android:id="@+id/ex_content" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipChildren="true"/>
+<FrameLayout android:id="@+id/ex_footer" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+<View android:id="@+id/ex_bottom_inset" android:layout_width="match_parent" android:layout_height="0dp" android:background="?attr/exBackground"/></LinearLayout>

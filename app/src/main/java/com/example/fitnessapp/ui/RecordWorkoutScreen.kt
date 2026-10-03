@@ -33,7 +33,7 @@ import androidx.activity.compose.BackHandler
     var discard by remember { mutableStateOf(false) }
     val back = { if (draft.entries.isNotEmpty()) discard = true else onBack() }
     BackHandler(onBack = back)
-    Page("Ghi nhận buổi tập", back, footer = { PrimaryButton("Lưu buổi tập", draft.entries.isNotEmpty(), onClick = onSave) }) { pad ->
+    Page("Ghi nhận buổi tập", back, footer = { PrimaryButton("Lưu buổi tập", draft.entries.isNotEmpty(), onSave) }) { pad ->
         Column(Modifier.fillMaxSize().padding(pad).verticalScroll(rememberScrollState()).padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Panel(Modifier.clickable {
                 val day = LocalDate.parse(draft.date)
