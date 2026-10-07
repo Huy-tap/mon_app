@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.fitnessapp.RepositoryTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-07T16:52:21.916Z" hostname="ENDGAME-80.local" time="5.048">
+  <properties/>
+  <testcase name="sameDayAndRepeatedExerciseCountEntriesNotSets" classname="com.example.fitnessapp.RepositoryTest" time="4.675"/>
+  <testcase name="oncePreservedAndMigrationIdempotent" classname="com.example.fitnessapp.RepositoryTest" time="0.034"/>
+  <testcase name="sourceStatsAndEmptyMonth" classname="com.example.fitnessapp.RepositoryTest" time="0.021"/>
+  <testcase name="savePrimaryWithoutDuplicatesAndReopen" classname="com.example.fitnessapp.RepositoryTest" time="0.023"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuites tests="3" failures="0" errors="0" skipped="0" time="83.213" timestamp="2026-10-07T12:27:21" hostname="localhost">
+  <testsuite name="com.example.fitnessapp.XmlFlowTest" tests="3" failures="0" errors="0" skipped="0" time="80.698" timestamp="2026-10-07T12:27:21" hostname="localhost">
+    <properties>
+      <property name="device" value="FitnessFreshQA(AVD) - 17" />
+      <property name="flavor" value="" />
+      <property name="project" value=":app" />
+    </properties>
+    <testcase name="monthCancelConfirmRotateAndBack" classname="com.example.fitnessapp.XmlFlowTest" time="40.579" />
+    <testcase name="blockedPermissionStateKeepsFormUsable" classname="com.example.fitnessapp.XmlFlowTest" time="15.859" />
+    <testcase name="timeCancelValidationWeekDaysSaveAndReopen" classname="com.example.fitnessapp.XmlFlowTest" time="24.26" />
+  </testsuite>
+</testsuites>

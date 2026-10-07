@@ -1,0 +1,35 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+      <TextView android:id="@+id/title" style="@style/Title" android:text="@string/ui_44" android:layout_width="0dp" android:layout_weight="1" />
+      <ImageButton android:id="@+id/reminders" android:layout_width="48dp" android:layout_height="48dp" android:padding="15dp" android:background="@drawable/icon_circle" android:contentDescription="@string/ui_19" />
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/card">
+      <ImageButton android:id="@+id/previous" android:layout_width="48dp" android:layout_height="48dp" android:padding="15dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/ui_45" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/month" style="@style/Choice" android:text="@string/ui_46" app:backgroundTint="@android:color/transparent" android:textColor="@color/ink" android:textStyle="bold" android:textSize="15sp" />
+      <ImageButton android:id="@+id/next" android:layout_width="48dp" android:layout_height="48dp" android:padding="15dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/ui_47" />
+    </LinearLayout>
+    <TextView android:id="@+id/summary" style="@style/Label" android:text="@string/ui_48" android:textColor="@color/ink" android:textSize="15sp" />
+    <LinearLayout android:id="@+id/cards" android:layout_width="match_parent" android:layout_height="wrap_content">
+      <LinearLayout style="@style/Card" android:layout_width="0dp" android:layout_weight="1" android:padding="16dp" android:layout_marginEnd="12dp">
+        <TextView android:id="@+id/sessions" style="@style/Title" android:text="@string/ui_30" android:textSize="28sp" />
+        <TextView android:id="@+id/sessionsLabel" style="@style/Text" android:text="@string/ui_49" android:textSize="11sp" android:textColor="@color/muted" android:layout_marginTop="6dp" />
+      </LinearLayout>
+      <LinearLayout style="@style/Card" android:layout_width="0dp" android:layout_weight="1" android:padding="16dp" android:layout_marginEnd="12dp">
+        <TextView android:id="@+id/minutes" style="@style/Title" android:text="@string/ui_30" android:textSize="28sp" />
+        <TextView android:id="@+id/minutesLabel" style="@style/Text" android:text="@string/ui_50" android:textSize="11sp" android:textColor="@color/muted" android:layout_marginTop="6dp" />
+      </LinearLayout>
+      <LinearLayout style="@style/Card" android:layout_width="0dp" android:layout_weight="1" android:padding="16dp" android:layout_marginEnd="0dp">
+        <TextView android:id="@+id/completed" style="@style/Title" android:text="@string/ui_30" android:textSize="28sp" />
+        <TextView android:id="@+id/completedLabel" style="@style/Text" android:text="@string/ui_51" android:textSize="11sp" android:textColor="@color/muted" android:layout_marginTop="6dp" />
+      </LinearLayout>
+    </LinearLayout>
+    <ProgressBar android:id="@+id/loading" android:layout_width="48dp" android:layout_height="48dp" android:layout_gravity="center" android:layout_marginTop="24dp" />
+    <LinearLayout style="@style/Card" android:id="@+id/stateCard" android:layout_marginTop="16dp" android:padding="32dp">
+      <ImageView android:id="@+id/stateIcon" android:layout_width="72dp" android:layout_height="72dp" android:padding="18dp" android:layout_gravity="center" android:contentDescription="@null" android:background="@drawable/illustration_circle" />
+      <TextView android:id="@+id/stateTitle" style="@style/Title" android:text="" android:textSize="16sp" android:gravity="center" />
+      <TextView android:id="@+id/stateMessage" style="@style/Text" android:text="" android:gravity="center" android:textColor="@color/muted" android:layout_marginTop="12dp" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/retry" style="@style/Action" android:text="@string/ui_52" android:layout_marginTop="20dp" app:backgroundTint="@color/ink" />
+    </LinearLayout>
+  </LinearLayout>
+</ScrollView>

@@ -1,0 +1,7 @@
+    RTC_WAKEUP #40: Alarm{beae8f type 0 origWhen 1791543600000 whenElapsed 167241657 com.example.fitnessapp}
+      tag=*walarm*:com.example.fitnessapp.REMINDER
+      type=RTC_WAKEUP origWhen=2026-10-09 18:00:00.000 window=+1h0m0s0ms repeatInterval=0 count=0 flags=0x20
+      policyWhenElapsed: requester=+1d22h22m20s383ms app_standby=-44s48ms device_idle=-- battery_saver=-44s48ms
+      whenElapsed=+1d22h22m20s383ms maxWhenElapsed=+1d23h22m20s383ms
+      operation=PendingIntent{bfa151c: PendingIntentRecord{b91b525 com.example.fitnessapp broadcastIntent}}
+      idle-options=Bundle[{android.pendingIntent.backgroundActivityAllowed=2, android:broadcast.temporaryAppAllowlistReasonCode=-1, android:broadcast.temporaryAppAllowlistDuration=10000, android:broadcast.temporaryAppAllowlistReason=, android:broadcast.temporaryAppAllowlistType=1, android:broadcast.flags=8}]

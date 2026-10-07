@@ -1,0 +1,8 @@
+    RTC_WAKEUP #34: Alarm{7e870b8 type 0 origWhen 1791478200000 whenElapsed 86335679 com.example.fitnessapp}
+      tag=*walarm*:com.example.fitnessapp.REMINDER
+      type=RTC_WAKEUP origWhen=2026-10-08 23:50:00.000 window=0 exactAllowReason=permission repeatInterval=0 count=0 flags=0x5
+      policyWhenElapsed: requester=+23h58m26s326ms app_standby=-9s254ms device_idle=-- battery_saver=-9s254ms
+      whenElapsed=+23h58m26s326ms maxWhenElapsed=+23h58m26s326ms
+      operation=PendingIntent{6a03e91: PendingIntentRecord{a7101f6 com.example.fitnessapp broadcastIntent}}
+      idle-options=Bundle[{android.pendingIntent.backgroundActivityAllowed=2, android:broadcast.temporaryAppAllowlistReasonCode=302, android:broadcast.temporaryAppAllowlistDuration=10000, android:broadcast.temporaryAppAllowlistReason=, android:broadcast.temporaryAppAllowlistType=0, android:broadcast.flags=8}]
+No FitnessApp notification was present after reboot.

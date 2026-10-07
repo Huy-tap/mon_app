@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" android:paddingTop="8dp">
+  <View android:layout_width="40dp" android:layout_height="4dp" android:layout_gravity="center_horizontal" android:layout_marginBottom="20dp" android:background="@drawable/sheet_handle" />
+  <TextView android:id="@+id/title" style="@style/Title" android:text="@string/ui_1" android:gravity="center" android:textSize="18sp" />
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/year_selector" android:layout_marginTop="12dp" android:layout_marginBottom="12dp">
+    <ImageButton android:id="@+id/previousYear" android:layout_width="48dp" android:layout_height="48dp" android:padding="15dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/ui_2" />
+    <TextView android:id="@+id/year" style="@style/Text" android:text="" android:layout_width="0dp" android:layout_weight="1" android:gravity="center" android:textStyle="bold" />
+    <ImageButton android:id="@+id/nextYear" android:layout_width="48dp" android:layout_height="48dp" android:padding="15dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/ui_3" />
+  </LinearLayout>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/month1" style="@style/Choice" android:text="@string/ui_4" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month2" style="@style/Choice" android:text="@string/ui_5" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month3" style="@style/Choice" android:text="@string/ui_6" android:layout_margin="4dp" />
+  </LinearLayout>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/month4" style="@style/Choice" android:text="@string/ui_7" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month5" style="@style/Choice" android:text="@string/ui_8" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month6" style="@style/Choice" android:text="@string/ui_9" android:layout_margin="4dp" />
+  </LinearLayout>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/month7" style="@style/Choice" android:text="@string/ui_10" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month8" style="@style/Choice" android:text="@string/ui_11" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month9" style="@style/Choice" android:text="@string/ui_12" android:layout_margin="4dp" />
+  </LinearLayout>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/month10" style="@style/Choice" android:text="@string/ui_13" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month11" style="@style/Choice" android:text="@string/ui_14" android:layout_margin="4dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/month12" style="@style/Choice" android:text="@string/ui_15" android:layout_margin="4dp" />
+  </LinearLayout>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/cancel" style="@style/Choice" android:text="@string/ui_16" app:backgroundTint="#F1F5F9" android:textColor="@color/ink" android:layout_marginEnd="12dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/confirm" style="@style/Choice" android:text="@string/ui_17" app:backgroundTint="@color/ink" />
+  </LinearLayout>
+</LinearLayout>

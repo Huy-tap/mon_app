@@ -1,0 +1,9 @@
+No pending RTC_WAKEUP alarm for FitnessApp; cancellation history:
+      #1: Reason=alarm_cancelled elapsed=-2s90ms rtc=2026-10-07 23:52:03.499
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+23h57m54s411ms app_standby=-8s673ms device_idle=-- battery_saver=-8s673ms
+      #2: Reason=alarm_cancelled elapsed=-8s679ms rtc=2026-10-07 23:51:56.909
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+23h57m54s412ms app_standby=-8s990ms device_idle=-- battery_saver=-41s168ms

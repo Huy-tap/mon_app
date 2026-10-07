@@ -1,0 +1,35 @@
+    RTC_WAKEUP #39: Alarm{7775ba9 type 0 origWhen 1791478200000 whenElapsed 86619667 com.example.fitnessapp}
+      tag=*walarm*:com.example.fitnessapp.REMINDER
+      type=RTC_WAKEUP origWhen=2026-10-08 23:50:00.000 window=0 exactAllowReason=permission repeatInterval=0 count=0 flags=0x5
+      policyWhenElapsed: requester=+23h59m35s21ms app_standby=-24s839ms device_idle=-- battery_saver=-24s839ms
+      whenElapsed=+23h59m35s21ms maxWhenElapsed=+23h59m35s21ms
+      operation=PendingIntent{975b52e: PendingIntentRecord{88759f3 com.example.fitnessapp broadcastIntent}}
+      idle-options=Bundle[{android.pendingIntent.backgroundActivityAllowed=2, android:broadcast.temporaryAppAllowlistReasonCode=302, android:broadcast.temporaryAppAllowlistDuration=10000, android:broadcast.temporaryAppAllowlistReason=, android:broadcast.temporaryAppAllowlistType=0, android:broadcast.flags=8}]
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s20ms app_standby=-2m45s132ms device_idle=-- battery_saver=-2m45s132ms
+      #2: Reason=alarm_cancelled elapsed=-2m45s143ms rtc=2026-10-07 23:47:39.837
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s21ms app_standby=-2m45s149ms device_idle=-- battery_saver=-2m45s149ms
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s21ms app_standby=-2m45s149ms device_idle=-- battery_saver=-2m45s149ms
+      #3: Reason=alarm_cancelled elapsed=-2m45s176ms rtc=2026-10-07 23:47:39.804
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s21ms app_standby=-3m39s310ms device_idle=-- battery_saver=-2m45s506ms
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s21ms app_standby=-3m39s310ms device_idle=-- battery_saver=-2m45s506ms
+      #4: Reason=alarm_cancelled elapsed=-3m39s325ms rtc=2026-10-07 23:46:45.655
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s20ms app_standby=-3m39s694ms device_idle=-- battery_saver=-3m42s644ms
+        Snapshot:
+          type=RTC_WAKEUP tag=*walarm*:com.example.fitnessapp.REMINDER 
+          policyWhenElapsed: requester=+1d18h9m35s20ms app_standby=-3m39s694ms device_idle=-- battery_saver=-3m42s644ms
+  
+  Top Alarms:
+    +139ms running, 1 wakeups, 1 alarms: u0a235:com.example.fitnessapp
+      *walarm*:com.example.fitnessapp.REMINDER

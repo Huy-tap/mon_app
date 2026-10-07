@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.fitnessapp.ReminderRulesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-07T16:52:21.719Z" hostname="ENDGAME-80.local" time="0.048">
+  <properties/>
+  <testcase name="weeklySundayMultipleDaysAndWeekRollover" classname="com.example.fitnessapp.ReminderRulesTest" time="0.038"/>
+  <testcase name="disabledInvalidDaysAndOnce" classname="com.example.fitnessapp.ReminderRulesTest" time="0.002"/>
+  <testcase name="dailyBeforeAfterAndYearBoundary" classname="com.example.fitnessapp.ReminderRulesTest" time="0.0"/>
+  <testcase name="daylightSavingGapAndOverlapStillFuture" classname="com.example.fitnessapp.ReminderRulesTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
