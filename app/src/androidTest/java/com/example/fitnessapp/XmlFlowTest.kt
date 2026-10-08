@@ -75,6 +75,33 @@ class XmlFlowTest {
             onView(withId(R.id.month)).check(matches(withText(selected)))
         }
     }
+    @Test fun statisticsChartAndEmptyState() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            onView(withId(R.id.month)).perform(click())
+            onView(withId(R.id.month9)).perform(click())
+            onView(withId(R.id.confirm)).perform(click())
+            sheetClosed(scenario,"month")
+            ready(scenario,R.id.sessions) { it == "11" }
+            onView(withId(R.id.chartCard)).check(matches(isDisplayed()))
+            onView(withId(R.id.stateCard)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
+            captureStatistics("statistics-september-updated.png")
+            onView(withId(R.id.next)).perform(click())
+            ready(scenario,R.id.sessions) { it == "0" }
+            onView(withId(R.id.chartCard)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
+            onView(withId(R.id.startWorkout)).check(matches(isDisplayed()))
+            captureStatistics("statistics-empty-updated.png")
+        }
+    }
+    private fun captureStatistics(name: String) {
+        val instrumentation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+        instrumentation.waitForIdleSync()
+        android.os.SystemClock.sleep(300) // Let the rendered frame settle before visual QA.
+        val bitmap=instrumentation.uiAutomation.takeScreenshot()
+        java.io.File(instrumentation.targetContext.getExternalFilesDir(null),name).outputStream().use {
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)
+        }
+        bitmap.recycle()
+    }
     @Test fun timeCancelValidationWeekDaysSaveAndReopen() {
         ActivityScenario.launch(MainActivity::class.java).use { s ->
             onView(withId(R.id.reminders)).perform(click());ready(s,R.id.save) { it=="Lưu cài đặt" }
@@ -119,11 +146,7 @@ class XmlFlowTest {
                 ready(scenario,R.id.stateTitle) { it=="Lỗi tải dữ liệu" }
                 onView(withId(R.id.cards)).check(matches(org.hamcrest.Matchers.not(isDisplayed())))
                 onView(withId(R.id.retry)).check(matches(isDisplayed()))
-                val screenshot=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()
-                java.io.File(context.getExternalFilesDir(null),"statistics-error.png").outputStream().use {
-                    screenshot.compress(android.graphics.Bitmap.CompressFormat.PNG,100,it)
-                }
-                screenshot.recycle()
+                captureStatistics("statistics-error.png")
             } finally { db.execSQL("ALTER TABLE temporarily_unavailable_workouts RENAME TO workouts") }
             onView(withId(R.id.retry)).perform(click())
             ready(scenario,R.id.stateTitle) { it.isEmpty() }

@@ -26,6 +26,16 @@ class FitnessRepository(private val db: SQLiteDatabase) {
         }
         return MonthlyStats(totals.first, totals.second, completed)
     }
+    /** Four columns in the design: days 1–7, 8–14, 15–21, and 22–end of month. */
+    fun monthFrequency(month: YearMonth): List<Long> {
+        val counts = MutableList(4) { 0L }
+        db.rawQuery("""SELECT MIN((CAST(substr(workout_date,9,2) AS INTEGER)-1)/7,3), COUNT(*)
+            FROM workouts WHERE workout_date >= ? AND workout_date < ? GROUP BY 1""",
+            arrayOf(month.atDay(1).toString(), month.plusMonths(1).atDay(1).toString())).use { cursor ->
+            while (cursor.moveToNext()) counts[cursor.getInt(0)] = cursor.getLong(1)
+        }
+        return counts
+    }
     fun getPrimaryReminder(): Reminder = db.rawQuery("SELECT * FROM reminders ORDER BY reminder_id LIMIT 1", null).use { c ->
         fun text(n: String): String? = c.getColumnIndexOrThrow(n).let { if(c.isNull(it)) null else c.getString(it) }
         if (!c.moveToFirst()) Reminder() else Reminder(c.getLong(c.getColumnIndexOrThrow("reminder_id")), text("title")!!,

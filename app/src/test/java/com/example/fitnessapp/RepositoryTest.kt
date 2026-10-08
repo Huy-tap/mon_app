@@ -36,6 +36,13 @@ class RepositoryTest {
         db.execSQL("INSERT INTO workout_sets(workout_exercise_id,set_number,reps,completed) VALUES(1001,1,10,1),(1001,2,10,1),(1002,1,10,1),(1004,1,10,1),(1004,2,10,0)")
         assertEquals(MonthlyStats(2,50,2),repo.monthStats(YearMonth.of(2028,1)))
     }
+    @Test fun frequencyIncludesEverySessionAndMonthBoundary() {
+        db.execSQL("INSERT INTO workouts(workout_id,workout_date,duration_minutes) VALUES(2001,'2028-01-01',10),(2002,'2028-01-07',10),(2003,'2028-01-08',10),(2004,'2028-01-14',10),(2005,'2028-01-15',10),(2006,'2028-01-21',10),(2007,'2028-01-22',10),(2008,'2028-01-31',10),(2009,'2028-02-01',10),(2010,'2028-01-01',10)")
+        assertEquals(listOf(3L,2L,2L,2L), repo.monthFrequency(YearMonth.of(2028,1)))
+        assertEquals(listOf(1L,0L,0L,0L), repo.monthFrequency(YearMonth.of(2028,2)))
+        assertEquals(listOf(0L,0L,0L,0L), repo.monthFrequency(YearMonth.of(2025,1)))
+        assertEquals(repo.monthStats(YearMonth.of(2026,9)).sessions, repo.monthFrequency(YearMonth.of(2026,9)).sum())
+    }
     @Test fun savePrimaryWithoutDuplicatesAndReopen() {
         val original=repo.getPrimaryReminder()
         val others=db.rawQuery("SELECT * FROM reminders WHERE reminder_id != ?",arrayOf(original.id.toString())).use { buildList { while(it.moveToNext()) add((0 until it.columnCount).map { index -> it.getString(index) }) } }

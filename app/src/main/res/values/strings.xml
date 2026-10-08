@@ -53,4 +53,10 @@
     <string name="ui_50">Phút tập</string>
     <string name="ui_51">Lượt bài xong</string>
     <string name="ui_52">Thử lại</string>
+  <string name="statistics_frequency">Tần suất tập luyện</string>
+  <string name="statistics_this_month">Tháng này</string>
+  <string name="statistics_start">Bắt đầu tập luyện</string>
+  <string name="statistics_workout_unavailable">Màn hình tập luyện chưa được tích hợp.</string>
+  <string name="statistics_week">Tuần %1$d</string>
+  <string name="statistics_week_accessibility">Tuần %1$d: %2$d buổi tập</string>
 </resources>

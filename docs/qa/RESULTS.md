@@ -36,3 +36,10 @@ Espresso: tháng Hủy/Xác nhận, xoay khi sheet đang mở, giữ tháng, Bac
 Chưa chạy trên điện thoại vật lý hoặc emulator API 27; chưa kiểm thử kéo dài qua nhiều ngày, Doze/OEM tiết kiệm pin và đổi múi giờ thực tế. Logic DST được unit test. Android có thể trì hoãn alarm không chính xác; force-stop chặn lịch cho đến khi mở lại. Các log có cảnh báo native access từ Robolectric chạy trên Java 25, không làm test thất bại.
 
 Source thuộc nhánh fresh-start. `.idea/` có sẵn được giữ nguyên và ignore. Không có source/giao diện ngoài hai module được nhập từ nhánh nguồn.
+
+
+## Cập nhật module Thống kê — 08/10/2026
+
+Đối chiếu lại design context và screenshot các node 288:3336, 288:3417, 288:3484 và thẻ lỗi 288:3509. Thêm biểu đồ native bốn cột, dữ liệu thực tháng 09/2026 là 2/3/2/4, tổng 11 buổi. Nhóm cuối gồm ngày 22–cuối tháng. Chỉnh app bar 12dp/40dp, selector bo 12dp, khoảng cách 16dp, thẻ trạng thái padding 40dp/bo 20dp và CTA 48dp/bo 12dp. Không thêm điều hướng của các module khác. Nút bắt đầu chưa có màn hình đích, hiện thông báo chưa tích hợp.
+
+Build debug, lint và 9/9 unit test PASS. Ba kiểm tra instrumentation cho module Thống kê PASS: có dữ liệu/trống, lỗi/thử lại, chọn tháng/xoay/quay lại. Kiểm tra query mới bao gồm hai buổi cùng ngày, các mốc 7/8, 14/15, 21/22, ngày 31 và ranh giới tháng. Xem trực tiếp ảnh cập nhật: statistics-september-updated.png, statistics-empty-updated.png, statistics-error-updated.png. Font/icon cục bộ được tái sử dụng; thanh hệ thống thật và chiều rộng emulator khác frame iOS Figma.

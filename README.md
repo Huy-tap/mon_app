@@ -51,6 +51,6 @@ adb shell settings put global animator_duration_scale 0
 
 Instrumentation nên chạy trên emulator riêng với quyền POST_NOTIFICATIONS chưa cấp để kiểm tra trạng thái bị chặn. Không xóa database người dùng; runner dùng bản sao riêng. Kết quả chạy thực tế và ảnh đối chiếu được ghi trong `docs/qa/RESULTS.md`.
 
-Thiết kế: https://www.figma.com/design/kjkcenI9nvQYV8xEku9osc?node-id=288-3336 . Đã đọc design context/screenshot của toàn bộ 13 node yêu cầu. Các tab chức năng ngoài phạm vi, biểu đồ tùy chọn và thanh hệ thống mô phỏng không được đưa vào ứng dụng.
+Thiết kế: https://www.figma.com/design/kjkcenI9nvQYV8xEku9osc?node-id=288-3336 . Đã đọc design context/screenshot của toàn bộ 13 node yêu cầu. Module Thống kê có biểu đồ tần suất bốn cột từ dữ liệu thực và các trạng thái trống/lỗi theo Figma. Nút Bắt đầu tập luyện chưa có màn hình đích trong repo và hiện thông báo chưa tích hợp. Các tab chức năng ngoài phạm vi và thanh hệ thống mô phỏng không được đưa vào ứng dụng.
 
 Tài liệu Android: https://developer.android.com/develop/background-work/services/alarms và https://developer.android.com/develop/ui/views/notifications/notification-permission .
