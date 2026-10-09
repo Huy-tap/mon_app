@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="HomeText" parent="ExText">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:lineHeight">19.6sp</item>
+        <item name="android:minHeight">19.6sp</item>
+    </style>
+<style name="HomeSmall" parent="HomeText">
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineHeight">18.2sp</item>
+        <item name="android:minHeight">18.2sp</item>
+    </style>
+<style name="HomeCaption" parent="HomeText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight">16.8sp</item>
+        <item name="android:minHeight">16.8sp</item>
+    </style>
+<style name="HomeHeading" parent="HomeText">
+        <item name="android:textSize">17sp</item>
+        <item name="android:lineHeight">23.8sp</item>
+        <item name="android:minHeight">23.8sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+<style name="HomeNumber" parent="HomeText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineHeight">33.6sp</item>
+        <item name="android:minHeight">33.6sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

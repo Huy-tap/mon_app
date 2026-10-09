@@ -13,9 +13,9 @@ import com.caverock.androidsvg.SVG
 import com.example.fitnessapp.R
 
 object FeatureAvailability {
-    // TODO: Trang này chưa phát triển: Theo dõi tập luyện, Lịch sử, Thống kê, Cài đặt.
+    // TODO: Trang này chưa phát triển: Theo dõi tập luyện, Lịch sử, Cài đặt.
     // Chỉ mở từng module sau khi hoàn thiện giao diện XML và kiểm thử chức năng.
-    val availableTabs = setOf("HOME", "EXERCISES")
+    val availableTabs = setOf("HOME", "EXERCISES", "STATS")
     fun showUnavailable(context: Context) {
         AlertDialog.Builder(context).setMessage("Trang này chưa phát triển")
             .setPositiveButton("Đóng", null).show()
@@ -31,7 +31,7 @@ object XmlNavigation {
         val labels = listOf(R.id.ex_tab_label_HOME, R.id.ex_tab_label_EXERCISES, R.id.ex_tab_label_HISTORY, R.id.ex_tab_label_STATS, R.id.ex_tab_label_SETTINGS)
         val files = if (dark) listOf("ad0de.svg", "ce785.svg", "7d27d.svg", "e6548.svg", "e307c.svg") else listOf(
             if (selected == "HOME") "190c1.svg" else "04aea.svg",
-            if (selected == "EXERCISES") "c6120.svg" else "2f6cd.svg", "74755.svg", "ee2a5.svg", "1519d.svg")
+            if (selected == "EXERCISES") "c6120.svg" else "2f6cd.svg", "74755.svg", if (selected == "STATS") "statistics_selected.svg" else "ee2a5.svg", "1519d.svg")
         tabs.forEachIndexed { index, tab ->
             activity.findViewById<ImageView>(icons[index]).apply {
                 setLayerType(View.LAYER_TYPE_SOFTWARE, null)

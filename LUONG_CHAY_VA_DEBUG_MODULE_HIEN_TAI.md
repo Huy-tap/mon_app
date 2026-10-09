@@ -2,7 +2,7 @@
 
 Tài liệu này bám theo code trong **FitnessAppmyworkpart2**. Đọc từ trên xuống như đang theo dõi Debug: thao tác → hàm xử lý → dữ liệu → giao diện.
 
-**Phạm vi đang mở:** Trang chủ và Quản lý bài tập dùng XML. Ghi nhận tập luyện, Lịch sử, Thống kê, Cài đặt và chỉnh nhắc nhở đang khóa. Trang chủ vẫn đọc dữ liệu cũ để hiển thị tổng quan.
+**Phạm vi đang mở:** Trang chủ, Quản lý bài tập, Thống kê và Nhắc nhở dùng XML. Ghi nhận tập luyện, Lịch sử và Cài đặt tổng đang khóa. Trang chủ đọc dữ liệu SQLite để hiển thị tổng quan.
 
 ## 1. Trước hết, phân biệt các loại file
 
@@ -48,6 +48,7 @@ FitnessController(context)
           → File chưa có hoặc rỗng: copyBundledDatabase(...)
           → SQLiteDatabase.openDatabase(...)
           → migrate(database)
+          → BundledExerciseMedia.install(context, database): bổ sung ảnh/video mẫu
           → Giữ kết nối để dùng lại
 ```
 
@@ -103,7 +104,7 @@ mutableState.value = HomeXmlState(data)
 | Buổi gần nhất | `data.workouts.firstOrNull()` | Nhóm `home_recent_*` |
 | Nhắc nhở | `data.reminder`, kết hợp quyền thông báo | Nhóm `home_reminder_*` |
 
-**Thống kê được tính ở [FitnessRules.monthStats()][rules], nằm trong file WorkoutDraft.kt.** Hàm lọc theo tháng của `workoutDate`, đếm buổi, cộng `durationMinutes` và đếm những lượt bài có hiệp, trong đó tất cả các hiệp đều hoàn thành.
+**Các chỉ số tổng quan trên Trang chủ được tính ở [FitnessRules.monthStats()][rules], nằm trong file WorkoutDraft.kt.** Hàm lọc theo tháng của `workoutDate`, đếm buổi, cộng `durationMinutes` và đếm những lượt bài có hiệp, trong đó tất cả các hiệp đều hoàn thành.
 
 Tên biến `completedSets` dễ gây nhầm: code hiện tại đếm **lượt bài hoàn thành**, không cộng số hiệp, cũng không đếm số tên bài khác nhau.
 
@@ -245,6 +246,8 @@ Xem [ExerciseXmlModel.delete()][model-delete] và [FitnessController.deleteExerc
 
 ## 9. Chọn ảnh/video: file và database liên quan như thế nào?
 
+**Media có sẵn:** trước khi màn hình đọc bài tập, `FitnessDatabase.openInternal()` gọi `BundledExerciseMedia.install()`. Hàm đọc đường dẫn `media/...` trong database đóng gói, sao chép file sang bộ nhớ app và cập nhật đường dẫn cho bài cùng mã, giữ media người dùng đã chọn. Xem [hướng dẫn media mẫu](C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/HUONG_DAN_MEDIA_MAU.md). Các luồng dưới đây là thao tác chọn/chụp media của người dùng.
+
 Bắt đầu ở `wireMedia()` → [showSources(video)][ex-sources]. Tham số `video = false` là ảnh; `true` là video.
 
 | Thao tác | Luồng xử lý |
@@ -276,7 +279,7 @@ Callback nhận kết quả trong `HomeXmlActivity` hiện để trống. Việc
 - Bài tập dùng [saveState()][model-state] lưu stack, form, vị trí cuộn, đường dẫn camera, trạng thái media vào Bundle. `start()` đọc lại nếu cần khởi tạo sau khi tiến trình bị đóng.
 - Nội dung form chưa lưu không phải một dòng trong bảng `exercises` và không được đảm bảo giữ sau khi người dùng chủ động thoát/hủy form hoặc xóa dữ liệu ứng dụng.
 
-**Bấm mục chưa phát triển:** [FeatureAvailability][locked] chỉ cho phép `HOME`, `EXERCISES`. Những tab khác hiện “Trang này chưa phát triển”. Các nút ghi nhận, xem tất cả, buổi gần nhất, chỉnh nhắc nhở trên Trang chủ cũng gọi thông báo này. Chúng không mở màn hình Compose cũ.
+**Điều hướng:** [FeatureAvailability][locked] cho phép `HOME`, `EXERCISES`, `STATS`. Tab Lịch sử/Cài đặt và các nút ghi nhận, xem tất cả, buổi gần nhất hiện “Trang này chưa phát triển”. Nút chỉnh nhắc nhở mở `ReminderFragment` trong khung XML mới. Không mở giao diện Compose cũ.
 
 ## 11. Tự quan sát bằng Debug trong Android Studio
 
@@ -338,7 +341,7 @@ Code dùng coroutine: `viewModelScope.launch` khởi động tác vụ; `withCon
 | Chọn ảnh xong chưa thấy đường dẫn trong SQLite | Kiểm tra `model.form`, rồi xác nhận đã bấm Lưu bài tập hay chưa |
 | Ảnh hiện dấu trống | `decodeExercisePhoto()` trong ExerciseXmlAdapter.kt → kiểm tra đường dẫn và file tồn tại |
 | Xóa rồi database vẫn có dòng đó | `deleteExercise()` dùng `is_archived = 1`; đây là cách giữ liên kết với lịch sử |
-| Bấm Lịch sử/Thống kê/Cài đặt chỉ ra thông báo | `FeatureAvailability` đang khóa module theo giai đoạn |
+| Bấm Lịch sử/Cài đặt chỉ ra thông báo | `FeatureAvailability` đang khóa module theo giai đoạn |
 | Sửa file Compose mà app không thay đổi | Luồng đang mở là `MainActivity` → `HomeXmlActivity` → `ExerciseXmlActivity` |
 
 Các số dòng trong liên kết là vị trí lúc tạo tài liệu. Nếu bạn chỉnh code làm dòng thay đổi, tìm theo tên hàm được ghi bên cạnh.
@@ -365,7 +368,7 @@ Các số dòng trong liên kết là vị trí lúc tạo tài liệu. Nếu b�
 
 [db-open]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/java/com/example/fitnessapp/data/FitnessDatabase.kt:14>
 
-[db-migrate]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/java/com/example/fitnessapp/data/FitnessDatabase.kt:41>
+[db-migrate]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/java/com/example/fitnessapp/data/FitnessDatabase.kt:42>
 
 [controller]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/java/com/example/fitnessapp/controller/FitnessController.kt:15>
 
@@ -438,3 +441,31 @@ Các số dòng trong liên kết là vị trí lúc tạo tài liệu. Nếu b�
 [form-xml]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/res/layout/screen_exercise_form_xml.xml>
 
 [detail-xml]: <C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/app/src/main/res/layout/screen_exercise_detail_xml.xml>
+
+## Luồng Thống kê và Nhắc nhở sau khi ghép
+
+```text
+MainActivity (Trang chủ XML)
+  → HomeXmlActivity.navigate("STATS")
+  → StatisticsReminderXmlActivity
+  → StatisticsFragment.load()
+  → FitnessRepository(FitnessDatabase.open(context))
+  → monthStats(month): workouts + workout_exercises + workout_sets
+  → monthFrequency(month): workouts
+  → chỉ số và FrequencyChartView
+
+Trang chủ: home_reminder_edit / Thống kê: nút chuông
+  → StatisticsReminderXmlActivity / ReminderFragment
+  → load(): FitnessRepository.getPrimaryReminder()
+  → TimeSheet chọn giờ; chọn DAILY hoặc WEEKLY và ngày
+  → save(): FitnessRepository.saveReminder()
+  → ReminderScheduler.schedule()
+  → AlarmManager → ReminderReceiver
+  → kiểm tra due/signature để bỏ báo thức cũ
+  → Notification → MainActivity với extra reminder=true
+  → HomeXmlActivity.openReminder()
+```
+
+HomeXmlModel chỉ đọc dữ liệu; HomeXmlActivity khôi phục lịch qua `ReminderScheduler.restore()` trên executor chung. Trả về từ màn hình Bài tập/Thống kê có extra `tab` để Trang chủ mở tab đích. Thống kê có thanh điều hướng dưới, Nhắc nhở ẩn thanh này. Bấm Back trên Nhắc nhở quay về Thống kê nếu mở từ chuông, hoặc Trang chủ nếu mở trực tiếp.
+
+Các file mới nằm ở `xmlui`, giao diện ở `res/layout`. Đã xóa `ui/StatsScreen.kt` và hàm Compose `ReminderSettingsScreen`; `ui/FitnessMainApp.kt` chỉ còn cầu nối XML cho shell tham khảo cũ. Database mẫu và bộ cài media mẫu của project đích vẫn được giữ.

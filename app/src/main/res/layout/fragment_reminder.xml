@@ -1,0 +1,51 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:theme="@style/ReminderTypography" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+      <ImageButton android:id="@+id/back" android:layout_width="48dp" android:layout_height="48dp" android:padding="12dp" android:background="@drawable/illustration_circle" android:contentDescription="@string/ui_18" />
+      <TextView android:id="@+id/title" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_19" android:textSize="20sp" android:layout_width="0dp" android:layout_weight="1" />
+    </LinearLayout>
+    <LinearLayout style="@style/Card" android:id="@+id/warning" android:layout_marginBottom="16dp" android:background="@drawable/warning_card">
+      <TextView android:id="@+id/warningTitle" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_20" android:textSize="16sp" android:textColor="#C2410C" />
+      <TextView android:id="@+id/warningText" style="@style/Text" android:text="@string/ui_21" android:layout_marginVertical="16dp" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/permission" style="@style/Action" android:text="@string/ui_22" />
+    </LinearLayout>
+    <LinearLayout style="@style/Card">
+      <TextView android:id="@+id/toggleTitle" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_23" android:textSize="18sp" />
+      <TextView android:id="@+id/toggleStatus" style="@style/Text" android:text="" android:textColor="@color/blue" android:layout_marginTop="4dp" />
+      <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/enabled" android:layout_width="wrap_content" android:layout_height="48dp" android:contentDescription="@string/ui_24" android:thumb="@drawable/switch_thumb" app:track="@drawable/switch_track" app:thumbTint="@null" app:trackTint="@null" app:switchMinWidth="52dp" app:useMaterialThemeColors="false" app:splitTrack="false" />
+    </LinearLayout>
+    <LinearLayout style="@style/Card" android:layout_marginTop="16dp" android:padding="16dp">
+      <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+        <ImageView android:id="@+id/clock" android:layout_width="20dp" android:layout_height="20dp" android:layout_marginEnd="12dp" android:contentDescription="@null" />
+        <TextView android:id="@+id/savedStatus" style="@style/Text" android:text="@string/ui_25" android:layout_width="0dp" android:layout_weight="1" android:textColor="@color/muted" />
+      </LinearLayout>
+    </LinearLayout>
+    <TextView android:id="@+id/repeatLabel" style="@style/Label" android:text="@string/ui_26" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+      <com.google.android.material.button.MaterialButton android:id="@+id/daily" style="@style/Choice" android:text="@string/ui_27" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/weekly" style="@style/Choice" android:text="@string/ui_28" />
+    </LinearLayout>
+    <TextView android:id="@+id/legacy" style="@style/Text" android:text="" android:textColor="@color/muted" />
+    <TextView android:id="@+id/timeLabel" style="@style/Label" android:text="@string/ui_29" />
+    <LinearLayout style="@style/Card">
+      <TextView android:id="@+id/time" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_30" android:textSize="48sp" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/changeTime" style="@style/Action" android:text="@string/ui_31" android:layout_width="wrap_content" android:layout_height="48dp" />
+    </LinearLayout>
+    <LinearLayout android:id="@+id/daySection" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+      <TextView android:id="@+id/dayLabel" style="@style/Label" android:text="@string/ui_32" />
+      <com.google.android.material.chip.ChipGroup android:id="@+id/days" android:layout_width="match_parent" android:layout_height="wrap_content" app:chipSpacingHorizontal="2dp">
+        <com.google.android.material.chip.Chip android:id="@+id/day1" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_33" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day2" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_34" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day3" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_35" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day4" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_36" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day5" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_37" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day6" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_38" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+        <com.google.android.material.chip.Chip android:id="@+id/day7" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/ui_39" android:checkable="true" app:ensureMinTouchTargetSize="true" app:chipMinTouchTargetSize="48dp" app:checkedIconVisible="false" app:chipBackgroundColor="@color/day_background" android:textColor="@color/day_text" android:textStyle="bold" android:textSize="13sp" app:chipCornerRadius="24dp" />
+      </com.google.android.material.chip.ChipGroup>
+    </LinearLayout>
+    <TextView android:id="@+id/exactStatus" style="@style/Text" android:text="" android:layout_marginTop="16dp" android:textColor="@color/muted" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/exactAccess" style="@style/Action" android:text="@string/ui_40" />
+    <TextView android:id="@+id/feedback" style="@style/Text" android:text="" android:accessibilityLiveRegion="polite" android:layout_marginTop="12dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/save" style="@style/Action" android:text="@string/ui_41" android:layout_marginTop="20dp" />
+  </LinearLayout>
+</ScrollView>

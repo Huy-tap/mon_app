@@ -56,10 +56,10 @@ class ExerciseXmlNavigationTest {
         val beforeReminder = controller.getPrimaryReminder()
         ActivityScenario.launch(MainActivity::class.java).use {
             waitFor(R.id.home_record)
-            listOf(R.id.home_record, R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { blocked(it, true) }
-            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
+            listOf(R.id.home_record, R.id.home_history, R.id.home_recent).forEach { blocked(it, true) }
+            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
-            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
+            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
             onView(withId(R.id.ex_add)).check(matches(isDisplayed()))
         }
         assertEquals(beforeWorkouts, controller.getAllWorkouts())
@@ -86,6 +86,35 @@ class ExerciseXmlNavigationTest {
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
             androidx.test.espresso.Espresso.pressBack(); waitFor(R.id.home_scroll)
             scenario.onActivity { assertEquals(position, it.findViewById<ScrollView>(R.id.home_scroll).scrollY) }
+        }
+    }
+
+    @Test fun statisticsTabConnectsHomeAndExercisesAndKeepsUnfinishedTabsLocked() {
+        val controller = FitnessController(context)
+        val before = controller.getAllWorkouts()
+        ActivityScenario.launch(MainActivity::class.java).use {
+            waitFor(R.id.home_record)
+            onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
+            blocked(R.id.ex_tab_HISTORY); blocked(R.id.ex_tab_SETTINGS)
+            onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
+            onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
+            onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
+        }
+        assertEquals(before, controller.getAllWorkouts())
+    }
+
+    @Test fun reminderOpensFromHomeAndNotificationIntentAndReturnsToHome() {
+        ActivityScenario.launch(MainActivity::class.java).use {
+            waitFor(R.id.home_record)
+            onView(withId(R.id.home_reminder_edit)).perform(scrollTo()); settleScroll()
+            onView(withId(R.id.home_reminder_edit)).perform(click()); waitFor(R.id.back)
+            onView(withId(R.id.back)).perform(click()); waitFor(R.id.home_scroll)
+        }
+        val intent = android.content.Intent(context, MainActivity::class.java)
+            .putExtra("reminder", true).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        ActivityScenario.launch<MainActivity>(intent).use {
+            waitFor(R.id.back)
+            androidx.test.espresso.Espresso.pressBack(); waitFor(R.id.home_record)
         }
     }
 }

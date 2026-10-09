@@ -26,7 +26,9 @@ open class HomeXmlActivity : ComponentActivity() {
     private lateinit var model: HomeXmlModel
     private var displayedTheme: Boolean? = null
     private var pendingScroll: Int? = null
-    private val exercises = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    private val screens = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) result.data?.getStringExtra("tab")?.let { navigate(it) }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_ExerciseXml)
@@ -36,9 +38,38 @@ open class HomeXmlActivity : ComponentActivity() {
         model = ViewModelProvider(this)[HomeXmlModel::class.java]
         showLayout(model.state.value.data?.dark ?: false)
         lifecycleScope.launch { model.state.collect { render(it) } }
+        if (savedInstanceState == null && intent.getBooleanExtra("reminder", false)) {
+            intent.removeExtra("reminder")
+            openReminder()
+        }
     }
 
-    override fun onResume() { super.onResume(); model.refresh() }
+    override fun onResume() {
+        super.onResume()
+        model.refresh()
+        ReminderScheduler.restore(applicationContext)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent.getBooleanExtra("reminder", false)) {
+            intent.removeExtra("reminder")
+            openReminder()
+        }
+    }
+
+    private fun navigate(tab: String) {
+        val dark = model.state.value.data?.dark ?: false
+        when (tab) {
+            "EXERCISES" -> screens.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
+            "STATS" -> screens.launch(Intent(this, StatisticsReminderXmlActivity::class.java))
+        }
+    }
+
+    private fun openReminder() {
+        screens.launch(Intent(this, StatisticsReminderXmlActivity::class.java).putExtra("reminder", true))
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt("homeScroll", findViewById<ScrollView>(R.id.home_scroll).scrollY)
@@ -62,11 +93,10 @@ open class HomeXmlActivity : ComponentActivity() {
             }
             insets
         }
-        XmlNavigation.bind(this, "HOME", dark) { tab ->
-            if (tab == "EXERCISES") exercises.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
-        }
+        XmlNavigation.bind(this, "HOME", dark, ::navigate)
+        findViewById<View>(R.id.home_reminder_edit).setOnClickListener { openReminder() }
         // TODO: Trang này chưa phát triển. Mở từng chức năng sau khi chuyển sang XML và kiểm thử.
-        listOf(R.id.home_record, R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { id ->
+        listOf(R.id.home_record, R.id.home_history, R.id.home_recent).forEach { id ->
             findViewById<View>(id).setOnClickListener { FeatureAvailability.showUnavailable(this) }
         }
         findViewById<View>(R.id.home_retry).setOnClickListener { model.refresh() }

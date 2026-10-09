@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.fitnessapp.IsolatedRunner"
     }
 
     buildTypes {
@@ -30,12 +30,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions { unitTests.isIncludeAndroidResources = true }
     buildFeatures {
+        viewBinding = true
         compose = true
     }
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("com.google.android.material:material:1.13.0")
+    testImplementation("org.robolectric:robolectric:4.16.1")
+    androidTestImplementation("androidx.test:core-ktx:1.7.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("com.caverock:androidsvg-aar:1.4")
     implementation("androidx.compose.material:material-icons-extended:1.6.8")

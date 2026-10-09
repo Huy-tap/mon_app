@@ -1,5 +1,6 @@
 package com.example.fitnessapp.xmlui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -8,6 +9,8 @@ import android.widget.ImageView
 import android.graphics.Canvas
 
 /** Same 1–5x pinch and drag behavior as the previous exercise image screen. */
+// Dùng framework ImageView với theme native của ExerciseXmlActivity (ComponentActivity).
+@SuppressLint("AppCompatCustomView")
 class ZoomImageView(context: Context, attrs: AttributeSet? = null) : ImageView(context, attrs) {
     var zoom = 1f
     var panX = 0f
