@@ -31,23 +31,3 @@ class MonthSheet: BottomSheetDialogFragment() {
     }
     override fun onSaveInstanceState(out: Bundle) { super.onSaveInstanceState(out);out.putString("month",selected.toString()) }
 }
-class TimeSheet: BottomSheetDialogFragment() {
-    private var binding: SheetTimeBinding?=null
-    override fun onCreateView(inflater: LayoutInflater,container: ViewGroup?,state: Bundle?): View {
-        val b=SheetTimeBinding.inflate(inflater,container,false);binding=b
-        b.hour.setText(state?.getString("hour") ?: requireArguments().getString("time")!!.substring(0,2))
-        b.minute.setText(state?.getString("minute") ?: requireArguments().getString("time")!!.substring(3,5))
-        b.cancel.setOnClickListener { dismiss() }
-        b.confirm.setOnClickListener {
-            val h=b.hour.text.toString().toIntOrNull();val m=b.minute.text.toString().toIntOrNull()
-            b.hour.error=if(h==null || h !in 0..23) "Giờ từ 00 đến 23" else null
-            b.minute.error=if(m==null || m !in 0..59) "Phút từ 00 đến 59" else null
-            if(h!=null && h in 0..23 && m!=null && m in 0..59) {
-                parentFragmentManager.setFragmentResult("time",Bundle().apply { putString("time",String.format(Locale.ROOT,"%02d:%02d:00",h,m)) });dismiss()
-            }
-        }
-        return b.root
-    }
-    override fun onSaveInstanceState(out: Bundle) { super.onSaveInstanceState(out);out.putString("hour",binding?.hour?.text.toString());out.putString("minute",binding?.minute?.text.toString()) }
-    override fun onDestroyView() { binding=null;super.onDestroyView() }
-}

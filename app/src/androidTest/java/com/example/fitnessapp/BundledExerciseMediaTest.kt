@@ -104,7 +104,8 @@ class BundledExerciseMediaTest {
         assertTrue(File(field("instruction_image", 4)!!).isFile)
         assertEquals("Squat", field("name", 4))
         // Không chấp nhận đường dẫn thoát ra ngoài thư mục mẫu.
+        val before = field("instruction_image", 2)
         BundledExerciseMedia.installEntries(context, db, listOf(BundledExerciseMedia.Entry(2, "instruction_image", "media/images/../pushup.png")))
-        assertNull(field("instruction_image", 2))
+        assertEquals(before, field("instruction_image", 2))
     }
 }

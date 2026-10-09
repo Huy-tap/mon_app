@@ -1,4 +1,4 @@
-# Bản XML: Trang chủ, Quản lý bài tập, Thống kê và Nhắc nhở
+# Bản XML: Trang chủ, Bài tập, Ghi nhận, Lịch sử, Thống kê, Nhắc nhở và Cài đặt
 
 Mở thư mục `FitnessAppmyworkpart2` bằng Android Studio, chờ Gradle Sync rồi chạy cấu hình `app`.
 
@@ -10,11 +10,11 @@ Phần **Quản lý bài tập** dùng XML và Android Views: danh sách Recycle
 
 **Thống kê và Nhắc nhở** đã ghép từ `module-ntd`, dùng XML/ViewBinding và Fragment. Vào Thống kê từ thanh điều hướng, vào Nhắc nhở từ nút Chỉnh sửa trên Trang chủ hoặc nút chuông trong Thống kê. Chạm thông báo cũng mở Nhắc nhở.
 
-**Tạm khóa**: Theo dõi/ghi nhận tập luyện, Lịch sử. Nút “Ghi nhận buổi tập”, “Xem tất cả” và thẻ buổi tập gần nhất vẫn hiện “Trang này chưa phát triển”. Nút “Bắt đầu tập luyện” trong Thống kê thông báo màn hình tập luyện chưa tích hợp.
+**Ghi nhận và Lịch sử** đã ghép từ `feature/workout-history`: chọn bài, nhập hiệp và thời lượng, lưu buổi tập, xem lịch sử theo tháng/ngày và chi tiết buổi tập. Các nút Ghi nhận, Xem tất cả, buổi gần nhất và Bắt đầu tập luyện trong Thống kê đã được nối. Năm tab đều hoạt động; Cài đặt và các màn hình mới dùng chung lựa chọn sáng/tối đã lưu.
 
-`MainActivity` mở trực tiếp Trang chủ XML. Các màn hình đang hoạt động không cần Compose. Đã xóa `ui/StatsScreen.kt` và hàm `ReminderSettingsScreen` cũ. Thư mục `ui` giữ code các module Compose còn lại để phát triển tiếp; `FitnessMainApp` và `ExerciseXmlRoute` không được gọi trong luồng chạy hiện tại. Không xóa database hay lịch sử khi khóa module.
+`MainActivity` mở trực tiếp Trang chủ XML. Các màn hình đang hoạt động không cần Compose. Các màn hình Compose cũ trong `ui` đã được xóa; chỉ còn `ui/theme` chưa sử dụng. Những file trong `xmlui` điều khiển các màn hình XML hiện tại.
 
-**Cài đặt tổng** đã mở dưới dạng giao diện XML xem thử; xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md). Form lịch nhắc trong Cài đặt hiện chỉ giữ bản nháp trong phiên; module Nhắc nhở từ Trang chủ/Thống kê vẫn hoạt động như trước.
+**Cài đặt và nhắc nhở** dùng chung một form XML, lưu lịch thật và đặt/hủy báo thức. Trang chủ, Cài đặt và Thống kê đều mở cùng form; xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md).
 
 ## File của Trang chủ
 
@@ -54,11 +54,12 @@ Kiểm tra bản Trang chủ XML: build debug thành công; 5 unit test, 7 test 
 Ở giai đoạn Quản lý bài tập trước đó, 8 test lưu trữ cũng đã đạt; camera, thư viện ảnh/video và khôi phục sau khi đóng tiến trình đã được kiểm tra.
 
 - `ExerciseXmlTest`: thêm/sửa, giữ lịch sử khi sửa/xóa, khôi phục form, giữ kết quả camera trong lúc khởi tạo lại, hủy bảng chọn media, vùng cuộn không đè nút.
-- `ExerciseXmlNavigationTest`: chuyển nhiều lần giữa Trang chủ và Bài tập XML, chặn toàn bộ lối vào module chưa phát triển, kiểm tra dữ liệu không đổi và giữ vị trí cuộn khi tạo lại màn hình.
+- `ExerciseXmlNavigationTest`: chuyển giữa các tab, mở lịch sử/chi tiết/nhắc nhở, kiểm tra dữ liệu không đổi và giữ vị trí cuộn khi tạo lại màn hình.
+- `WorkoutHistoryIntegrationTest`: lưu buổi tập qua giao diện rồi đối chiếu Trang chủ, Lịch sử, Chi tiết, Thống kê; kiểm tra sáng/tối và giữ tháng đã chọn khi tạo lại màn hình.
 - `FitnessPersistenceTest`: lưu buổi tập, các hiệp, thời lượng, giao dịch, nhắc nhở, migration và tên trùng.
 - Kiểm thử thủ công trên máy ảo: chụp ảnh, quay và phát video, chọn ảnh/video từ thư viện; đóng tiến trình app trong lúc mở camera rồi xác nhận ảnh.
 
-Các màn hình Compose cũ và test dựa trên cây giao diện Compose của module đã chuyển nằm trong `reference/compose-exercises` để đối chiếu. Chúng không được biên dịch vào ứng dụng mới. Thành phần ảnh/dòng bài tập dùng chung cho màn hình chọn bài của phần ghi nhận buổi tập vẫn được giữ trong `ui`.
+Các màn hình Compose cũ và test dựa trên cây giao diện Compose của module đã chuyển nằm trong `reference/compose-exercises` để đối chiếu. Chúng không được biên dịch vào ứng dụng mới. Phần chọn bài tập của Ghi nhận dùng `RecordWorkoutAdapters.kt` trong `xmlui`.
 
 APK sau khi build: `app/build/outputs/apk/debug/app-debug.apk`.
 
@@ -69,21 +70,21 @@ Phạm vi xác nhận hiện tại là máy ảo Android. Cần đối chiếu t
 - `xmlui/StatisticsReminderXmlActivity.kt`: chứa hai Fragment, xử lý Back, thanh điều hướng và vùng thanh hệ thống/bàn phím.
 - `xmlui/StatisticsFragment.kt`: chọn tháng, chỉ số, trạng thái trống/lỗi và tải lại khi quay lại.
 - `xmlui/FrequencyChartView.kt`: biểu đồ 4 cột; nhóm cuối gồm ngày 22 đến cuối tháng.
-- `xmlui/ReminderFragment.kt`: form lịch nhắc, quyền thông báo và báo thức chính xác.
+- `xmlui/SettingsXmlActivity.kt`, `ReminderSaveModel.kt`: form lịch nhắc chung, lưu lịch, quyền thông báo và báo thức chính xác.
 - `xmlui/PickerSheets.kt`: hộp chọn tháng/năm và giờ/phút.
 - `xmlui/UiAssets.kt`: đọc biểu tượng SVG từ `res/raw`.
 - `data/FitnessRepository.kt`: tổng số buổi, tổng phút, lượt bài hoàn thành, tần suất và đọc/lưu lịch chính. `StatisticsTotals` là dữ liệu trả về cho module Thống kê, tránh trùng `model/MonthlyStats` của Trang chủ.
 - `model/ReminderRules.kt`: tính lần nhắc tiếp theo, hỗ trợ DAILY/WEEKLY/ONCE.
 - `data/ReminderScheduler.kt`: AlarmManager, Notification, khôi phục sau boot/đổi giờ/cập nhật app; bỏ qua báo thức cũ.
 - `res/layout/activity_statistics_reminder_xml.xml`: khung màn hình và thanh điều hướng.
-- `res/layout/fragment_statistics.xml`, `fragment_reminder.xml`: hai giao diện chính.
-- `res/layout/sheet_month.xml`, `sheet_time.xml`: hộp chọn.
+- `res/layout/fragment_statistics.xml`: thống kê; `activity_reminder_settings_xml.xml`: form nhắc nhở chung.
+- `res/layout/sheet_month.xml`: chọn tháng thống kê; `settings_time_picker.xml`: chọn giờ nhắc.
 - `res/values/statistics_reminder_*.xml`, `res/raw`, các font Inter/Manrope/Outfit và nền đi kèm: tài nguyên module nguồn.
 
 Lịch nhắc vẫn lưu trong bảng `reminders` như module nguồn. SharedPreferences trong module này chỉ lưu trạng thái xin quyền và thông tin lần đặt báo thức; chưa chuyển cấu hình lịch nhắc hoặc giao diện sang SharedPreferences theo đề. Hai màn hình mới giữ giao diện sáng của module nguồn; Trang chủ/Bài tập vẫn giữ cấu hình giao diện trước đó.
 
 Giữ `FitnessDatabase.kt`, database mẫu và media của project đích. Không sao chép database nguồn đè lên dữ liệu hiện tại. `Reminder.kt` giữ bản hiện có vì nội dung tương đương.
 
-Thứ tự đọc luồng: Trang chủ → `HomeXmlActivity.navigate("STATS")` hoặc `openReminder()` → `StatisticsReminderXmlActivity` → Fragment → `FitnessRepository(FitnessDatabase.open(context))` → SQLite. Khi lưu lịch: `ReminderFragment.save()` → repository → `ReminderScheduler.schedule()` → receiver → thông báo → `MainActivity` → Nhắc nhở XML.
+Thứ tự đọc luồng: Trang chủ → `HomeXmlActivity.navigate("STATS")` hoặc `openReminder()` → `StatisticsReminderXmlActivity`/`SettingsXmlActivity` → `FitnessRepository(FitnessDatabase.open(context))` → SQLite. Khi lưu lịch: `ReminderSaveModel.save()` → repository → `ReminderScheduler.schedule()` → receiver → thông báo → `MainActivity` → Nhắc nhở XML.
 
 Các kiểm thử module mới nằm trong `ReminderRulesTest`, `RepositoryTest`, `StatisticsReminderXmlTest`; kiểm thử điều hướng chung nằm trong `ExerciseXmlNavigationTest`. Instrumentation dùng `IsolatedRunner` với database và cấu hình riêng.

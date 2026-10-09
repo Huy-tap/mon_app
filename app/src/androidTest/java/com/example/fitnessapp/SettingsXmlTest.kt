@@ -62,7 +62,7 @@ class SettingsXmlTest {
             onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
         }
     }
-    @Test fun previewRetainsDraftAndDoesNotWriteDatabase() {
+    @Test fun reminderRetainsDraftAndSavesDatabase() {
         val controller = FitnessController(context)
         val before = controller.getPrimaryReminder()
 
@@ -85,6 +85,12 @@ class SettingsXmlTest {
             capture("settings-time-picker")
             scenario.recreate()
             onView(withId(R.id.picker_minute)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).check(matches(withText("35")))
+            androidx.test.espresso.Espresso.closeSoftKeyboard()
+            onView(isRoot()).perform(object : androidx.test.espresso.ViewAction {
+                override fun getConstraints() = isRoot()
+                override fun getDescription() = "Đợi bảng chọn giờ ổn định sau khi khôi phục"
+                override fun perform(ui: androidx.test.espresso.UiController, view: android.view.View) { ui.loopMainThreadForAtLeast(500) }
+            })
             onView(withId(R.id.picker_confirm)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click())
             onView(withId(R.id.reminder_time)).check(matches(withText("07:35")))
             onView(withId(R.id.reminder_day_1)).perform(scrollTo(), click())
@@ -92,11 +98,19 @@ class SettingsXmlTest {
             scenario.recreate()
             onView(withId(R.id.reminder_weekly)).check(matches(isSelected()))
             onView(withId(R.id.reminder_time)).check(matches(withText("07:35")))
+            assertEquals(before, controller.getPrimaryReminder())
+            // Save disabled to avoid opening notification permission dialogs during this form test.
+            if (controller.getPrimaryReminder().isEnabled) onView(withId(R.id.reminder_toggle)).perform(scrollTo(), click())
             onView(withId(R.id.reminder_save)).perform(click())
             waitFor(R.id.settings_setup)
             capture("settings-preview-saved")
         }
-        assertEquals(before, controller.getPrimaryReminder())
+        val saved = controller.getPrimaryReminder()
+        assertEquals("07:35:00", saved.reminderTime)
+        assertEquals("WEEKLY", saved.repeatType)
+        assertEquals(false, saved.isEnabled)
+        com.example.fitnessapp.data.FitnessRepository(com.example.fitnessapp.data.FitnessDatabase.open(context)).saveReminder(before)
+        com.example.fitnessapp.data.ReminderScheduler.restore(context)
         assertEquals("false", controller.getState("dark_theme"))
     }
     @Test fun themeAppliesAcrossAppAndAfterRelaunch() {
@@ -118,9 +132,9 @@ class SettingsXmlTest {
                     onView(withId(R.id.month)).perform(click())
                     onView(withId(R.id.year)).check(matches(isDisplayed())); capture("global-month-$dark")
                     onView(withId(R.id.cancel)).perform(click())
-                    onView(withId(R.id.reminders)).perform(click()); waitFor(R.id.back)
-                    assertTheme(R.id.module_root, dark); capture("global-reminder-$dark")
-                    onView(withId(R.id.back)).perform(click()); waitFor(R.id.month)
+                    onView(withId(R.id.reminders)).perform(click()); waitFor(R.id.reminder_back)
+                    assertTheme(R.id.settings_root, dark); capture("global-reminder-$dark")
+                    onView(withId(R.id.reminder_back)).perform(click()); waitFor(R.id.month)
                     onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
                     assertTheme(R.id.home_root, dark); capture("global-home-$dark")
                 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/exBackground">
+
+    <!-- Top App Bar (Hình 3) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/detail_back"
+            style="@style/ExText"
+            android:layout_width="32dp"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="‹"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Quay lại" />
+
+        <TextView
+            android:id="@+id/detail_title"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="4dp"
+            android:text="Chi tiết buổi tập"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:lineHeight="30sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
+
+            <!-- Tóm tắt ngày tập và số bài -->
+            <TextView
+                android:id="@+id/detail_workout_date"
+                style="@style/ExText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="18/09/2026"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="4dp" />
+
+            <TextView
+                android:id="@+id/detail_workout_summary"
+                style="@style/ExText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2 bài · 25 phút"
+                android:textSize="14sp"
+                android:textColor="?attr/exMuted" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="16dp" />
+
+            <!-- Container danh sách bài tập chi tiết -->
+            <LinearLayout
+                android:id="@+id/detail_exercises_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Inset spacer đáy -->
+    <View
+        android:id="@+id/detail_bottom_inset"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/exBackground" />
+
+</LinearLayout>

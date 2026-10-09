@@ -28,7 +28,7 @@ class StatisticsFragment: Fragment() {
         childFragmentManager.setFragmentResultListener("month",viewLifecycleOwner) { _,result -> month=YearMonth.parse(result.getString("month"));load() }
         b.retry.setOnClickListener { load() }
         b.startWorkout.setOnClickListener {
-            android.widget.Toast.makeText(requireContext(), R.string.statistics_workout_unavailable, android.widget.Toast.LENGTH_SHORT).show()
+            startActivity(android.content.Intent(requireContext(), RecordWorkoutXmlActivity::class.java))
         }
     }
     override fun onResume() { super.onResume();load() }

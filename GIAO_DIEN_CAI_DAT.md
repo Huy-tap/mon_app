@@ -1,30 +1,37 @@
-# Giao diện Cài đặt — giai đoạn UI
+# Cài đặt và nhắc nhở tập luyện
 
-Thiết kế được đọc bằng MCP Figma từ file `kjkcenI9nvQYV8xEku9osc`:
+Ứng dụng dùng một form nhắc nhở chung: `activity_reminder_settings_xml.xml`, giữ bố cục của màn Cài đặt. `SettingsXmlActivity.kt` xử lý form, bảng nhập giờ và trạng thái quyền.
 
-- Cài đặt sáng / tối: `288:4650`, `288:4731`.
-- Chưa thiết lập / thiếu quyền thông báo: `288:4812`, `288:4881`.
-- Nhắc hằng ngày / theo tuần: `288:4964`, `288:5111`.
-- Cảnh báo quyền / chọn giờ: `288:5013`, `288:5170`.
+## Các đường vào
 
-Mở app → tab **Cài đặt**, từ Trang chủ hoặc Bài tập. Chọn Sáng/Tối để đổi giao diện toàn ứng dụng; lựa chọn được lưu vào `app_state.dark_theme` và giữ khi mở lại app. Vào **Thiết lập lịch nhắc** để thử bật/tắt, đổi tần suất, chọn ngày và nhập giờ. **Lưu cài đặt** cập nhật bản xem thử trong màn hình; thông báo sau khi bấm giải thích rõ chưa lưu lịch vào thiết bị. Quay lại khi chưa bấm Lưu sẽ bỏ phần chỉnh sửa. Nội dung được giữ khi Android tạo lại Activity.
+- Trang chủ → Nhắc nhở → Chỉnh sửa: mở `SettingsXmlActivity` với `reminder=true`.
+- Cài đặt → Thiết lập lịch nhắc: mở cùng form trong Activity hiện có.
+- Thống kê → nút nhắc nhở: mở `SettingsXmlActivity` với `reminder=true`.
+- Bấm thông báo → `MainActivity` → cùng form nhắc nhở.
 
-Theme được dùng chung qua `xmlui/AppTheme.kt`, các activity nạp đúng chế độ ngay khi mở và cập nhật khi trở lại.
+Quay lại từ form mở trực tiếp sẽ về Trang chủ hoặc Thống kê. Quay lại từ Cài đặt sẽ về trang Cài đặt. Nếu chưa Lưu thì bản nháp không ghi database.
 
-Màn hình đọc lịch hiện có và quyền thông báo để hiển thị trạng thái ban đầu. Giai đoạn này **phần bản nháp lịch nhắc chưa ghi SQLite, chưa đặt/hủy alarm và chưa xin quyền thông báo**. Thoát module rồi mở lại sẽ đọc dữ liệu hiện có. Nút Mở cài đặt hệ thống dẫn đến trang quyền thông báo của ứng dụng.
+## Lưu và đặt báo thức
+
+`SettingsXmlActivity` → `ReminderSaveModel.save(draft)` → `FitnessRepository.saveReminder()` → bảng SQLite `reminders` → `ReminderScheduler.schedule()` → AlarmManager → `ReminderReceiver` → Notification.
+
+Lịch hằng ngày hoặc theo tuần được lưu thật. Theo tuần phải chọn ít nhất một ngày; giờ hợp lệ 00–23 và phút 00–59. Tắt nhắc nhở rồi Lưu sẽ hủy báo thức đang chờ. ViewModel giữ thao tác lưu khi Android tạo lại Activity; form và bảng giờ giữ nội dung bản nháp.
+
+Sau khi lưu lịch bật, ứng dụng xin quyền thông báo nếu chưa từng hỏi. Nếu quyền bị chặn, lịch vẫn lưu nhưng không phát thông báo; form hiện cảnh báo và nút mở quyền hệ thống. Khi thiếu quyền báo thức chính xác, liên kết “Cho phép nhắc đúng giờ” mở trang quyền; bộ nhắc vẫn dùng báo thức có thể trễ trong lúc chưa được cấp quyền.
+
+Giao diện sáng/tối vẫn dùng `AppTheme.kt` và `app_state.dark_theme`. Database mẫu, bài tập, media và lịch sử không bị thay thế.
 
 ## File chính
 
-- `xmlui/SettingsXmlActivity.kt`: trạng thái xem thử, điều hướng trong module, chọn giờ, khôi phục trạng thái.
-- `res/layout/activity_settings_xml.xml`: trang cài đặt chính.
-- `res/layout/activity_reminder_settings_xml.xml`: form lịch nhắc.
-- `res/layout/settings_time_picker.xml`: bảng nhập giờ/phút, kiểm tra 00–23 và 00–59.
-- `res/values/settings_xml_styles.xml`, `res/drawable/settings_*.xml`: theme và nền.
-- `assets/figma/settings/`: SVG tải từ kết quả MCP; không phụ thuộc URL Figma lúc chạy.
-- `res/font/`: Outfit và Manrope từ Google Fonts; giấy phép trong `assets/licenses/`.
+- `xmlui/SettingsXmlActivity.kt`: trang Cài đặt và form nhắc nhở chung.
+- `xmlui/ReminderSaveModel.kt`: lưu lịch trên luồng nền và giữ thao tác qua việc tạo lại Activity.
+- `res/layout/activity_settings_xml.xml`: trang Cài đặt.
+- `res/layout/activity_reminder_settings_xml.xml`: form nhắc nhở duy nhất.
+- `res/layout/settings_time_picker.xml`: nhập giờ/phút.
+- `data/FitnessRepository.kt`, `data/ReminderScheduler.kt`: lưu SQLite, đặt/hủy báo thức và gửi thông báo.
 
-Dùng thanh trạng thái/thanh hệ thống thật của Android thay cho các thanh minh họa trong Figma. Bố cục cuộn theo chiều cao thiết bị; nút Lưu và thanh tab ở ngoài vùng cuộn. Chữ tab tần suất chưa chọn được tăng độ tương phản (Figma dùng chữ trắng trên nền trắng). Trạng thái thiếu quyền vẫn cho chỉnh bản nháp; không thể lên lịch thật trong giai đoạn UI. Theme tối của form nhắc nhở dùng token sẵn có vì Figma chỉ cung cấp form sáng.
+Đã bỏ `ReminderFragment.kt`, `fragment_reminder.xml`, `sheet_time.xml` và lớp `TimeSheet`. Bộ chọn tháng thống kê `MonthSheet` vẫn giữ.
 
 ## Kiểm tra
 
-Build debug và unit test; kiểm thử máy ảo bằng `SettingsXmlTest` và `ExerciseXmlNavigationTest`. Kiểm tra chuyển Trang chủ ↔ Cài đặt ↔ Bài tập, đổi theme, ngày/giờ, nhập giờ sai, khôi phục form/bảng giờ sau recreate và xác nhận dữ liệu nhắc trong SQLite không bị thay đổi; xác nhận theme được lưu và áp dụng ở Trang chủ, Bài tập, Thống kê, Nhắc nhở và các bảng chọn.
+`SettingsXmlTest`, `UnifiedReminderXmlTest` và `ExerciseXmlNavigationTest` kiểm tra các đường vào, quay lại đúng trang, bản nháp chưa lưu, lưu giờ/ngày thật, tạo lại Activity, quyền thông báo, đặt/hủy alarm và theme. Kiểm thử chạy trên máy ảo QA với database riêng; không dùng database đang làm việc của người dùng.

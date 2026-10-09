@@ -68,13 +68,14 @@ open class HomeXmlActivity : ComponentActivity() {
         val dark = AppTheme.isDark(this)
         when (tab) {
             "EXERCISES" -> screens.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
+            "HISTORY" -> screens.launch(Intent(this, WorkoutHistoryXmlActivity::class.java))
             "SETTINGS" -> screens.launch(Intent(this, SettingsXmlActivity::class.java).putExtra("dark", dark))
             "STATS" -> screens.launch(Intent(this, StatisticsReminderXmlActivity::class.java))
         }
     }
 
     private fun openReminder() {
-        screens.launch(Intent(this, StatisticsReminderXmlActivity::class.java).putExtra("reminder", true))
+        screens.launch(Intent(this, SettingsXmlActivity::class.java).putExtra("reminder", true))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -101,9 +102,14 @@ open class HomeXmlActivity : ComponentActivity() {
         }
         XmlNavigation.bind(this, "HOME", dark, ::navigate)
         findViewById<View>(R.id.home_reminder_edit).setOnClickListener { openReminder() }
-        // TODO: Trang này chưa phát triển. Mở từng chức năng sau khi chuyển sang XML và kiểm thử.
-        listOf(R.id.home_record, R.id.home_history, R.id.home_recent).forEach { id ->
-            findViewById<View>(id).setOnClickListener { FeatureAvailability.showUnavailable(this) }
+        findViewById<View>(R.id.home_record).setOnClickListener {
+            screens.launch(Intent(this, RecordWorkoutXmlActivity::class.java))
+        }
+        findViewById<View>(R.id.home_history).setOnClickListener { navigate("HISTORY") }
+        findViewById<View>(R.id.home_recent).setOnClickListener {
+            model.state.value.data?.workouts?.firstOrNull()?.let { workout ->
+                screens.launch(Intent(this, WorkoutDetailXmlActivity::class.java).putExtra("workout_id", workout.id))
+            }
         }
         findViewById<View>(R.id.home_retry).setOnClickListener { model.refresh() }
     }

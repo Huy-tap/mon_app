@@ -1,6 +1,6 @@
 # Luồng chạy hiện tại — Trang chủ và Quản lý bài tập
 
-> Cập nhật giao diện Cài đặt: tab SETTINGS đã mở bằng XML để xem thử. Phần mô tả khóa Cài đặt bên dưới là trạng thái trước lần cập nhật này. Xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md) cho luồng hiện tại.
+> Cập nhật giao diện Cài đặt: tab SETTINGS đã mở bằng XML; form nhắc nhở dùng chung cho Trang chủ/Cài đặt/Thống kê và lưu lịch thật. Xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md) cho luồng hiện tại.
 
 
 Tài liệu này bám theo code trong **FitnessAppmyworkpart2**. Đọc từ trên xuống như đang theo dõi Debug: thao tác → hàm xử lý → dữ liệu → giao diện.
@@ -282,7 +282,7 @@ Callback nhận kết quả trong `HomeXmlActivity` hiện để trống. Việc
 - Bài tập dùng [saveState()][model-state] lưu stack, form, vị trí cuộn, đường dẫn camera, trạng thái media vào Bundle. `start()` đọc lại nếu cần khởi tạo sau khi tiến trình bị đóng.
 - Nội dung form chưa lưu không phải một dòng trong bảng `exercises` và không được đảm bảo giữ sau khi người dùng chủ động thoát/hủy form hoặc xóa dữ liệu ứng dụng.
 
-**Điều hướng:** [FeatureAvailability][locked] cho phép `HOME`, `EXERCISES`, `STATS`. Tab Lịch sử/Cài đặt và các nút ghi nhận, xem tất cả, buổi gần nhất hiện “Trang này chưa phát triển”. Nút chỉnh nhắc nhở mở `ReminderFragment` trong khung XML mới. Không mở giao diện Compose cũ.
+**Điều hướng:** [FeatureAvailability][locked] cho phép đủ năm tab `HOME`, `EXERCISES`, `HISTORY`, `STATS`, `SETTINGS`. `HomeXmlActivity` nhận kết quả tab từ các Activity và mở màn hình tương ứng. Ghi nhận mở `RecordWorkoutXmlActivity`, Xem tất cả mở `WorkoutHistoryXmlActivity`, buổi gần nhất mở `WorkoutDetailXmlActivity`; chỉnh nhắc nhở mở `SettingsXmlActivity` với `reminder=true`.
 
 ## 11. Tự quan sát bằng Debug trong Android Studio
 
@@ -344,7 +344,7 @@ Code dùng coroutine: `viewModelScope.launch` khởi động tác vụ; `withCon
 | Chọn ảnh xong chưa thấy đường dẫn trong SQLite | Kiểm tra `model.form`, rồi xác nhận đã bấm Lưu bài tập hay chưa |
 | Ảnh hiện dấu trống | `decodeExercisePhoto()` trong ExerciseXmlAdapter.kt → kiểm tra đường dẫn và file tồn tại |
 | Xóa rồi database vẫn có dòng đó | `deleteExercise()` dùng `is_archived = 1`; đây là cách giữ liên kết với lịch sử |
-| Bấm Lịch sử/Cài đặt chỉ ra thông báo | `FeatureAvailability` đang khóa module theo giai đoạn |
+| Lịch sử tháng hiện tại trống | Chọn tháng có dữ liệu; database mẫu có lịch sử tháng 09/2026 |
 | Sửa file Compose mà app không thay đổi | Luồng đang mở là `MainActivity` → `HomeXmlActivity` → `ExerciseXmlActivity` |
 
 Các số dòng trong liên kết là vị trí lúc tạo tài liệu. Nếu bạn chỉnh code làm dòng thay đổi, tìm theo tên hàm được ghi bên cạnh.
@@ -458,9 +458,10 @@ MainActivity (Trang chủ XML)
   → chỉ số và FrequencyChartView
 
 Trang chủ: home_reminder_edit / Thống kê: nút chuông
-  → StatisticsReminderXmlActivity / ReminderFragment
+  → SettingsXmlActivity (reminder=true) / form activity_reminder_settings_xml
   → load(): FitnessRepository.getPrimaryReminder()
-  → TimeSheet chọn giờ; chọn DAILY hoặc WEEKLY và ngày
+  → settings_time_picker chọn giờ; chọn DAILY hoặc WEEKLY và ngày
+  → ReminderSaveModel giữ thao tác lưu qua việc tạo lại Activity
   → save(): FitnessRepository.saveReminder()
   → ReminderScheduler.schedule()
   → AlarmManager → ReminderReceiver

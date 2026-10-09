@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="12dp">
+
+    <LinearLayout
+        android:id="@+id/entry_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/ex_card"
+        android:padding="16dp">
+
+        <!-- Tên bài tập -->
+        <TextView
+            android:id="@+id/entry_name"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chống đẩy"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:lineHeight="22sp" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="4dp" />
+
+        <!-- Nhóm cơ & số hiệp -->
+        <TextView
+            android:id="@+id/entry_subtitle"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ngực · 3 hiệp"
+            android:textSize="13sp"
+            android:textColor="?attr/exText" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="2dp" />
+
+        <!-- Chi tiết lần / giây và thời lượng -->
+        <TextView
+            android:id="@+id/entry_details"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="12 / 10 / 8 lần · 10 phút"
+            android:textSize="13sp"
+            android:textColor="?attr/exText" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="4dp" />
+
+        <!-- Ghi chú (nếu có) -->
+        <TextView
+            android:id="@+id/entry_note"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ghi chú: Hiệp cuối hơi mỏi"
+            android:textSize="12sp"
+            android:textColor="?attr/exMuted" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="8dp" />
+
+        <!-- Hàng nút thao tác Sửa / Xóa ở góc phải -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end|center_vertical">
+
+            <!-- Nút Sửa -->
+            <TextView
+                android:id="@+id/entry_btn_edit"
+                style="@style/ExText"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/ex_pale_small"
+                android:gravity="center"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="Sửa"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="1dp" />
+
+            <!-- Nút Bỏ bài khỏi phiếu -->
+            <TextView
+                android:id="@+id/entry_btn_remove"
+                style="@style/ExText"
+                android:layout_width="36dp"
+                android:layout_height="32dp"
+                android:background="@drawable/ex_pale_small"
+                android:gravity="center"
+                android:text="✕"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

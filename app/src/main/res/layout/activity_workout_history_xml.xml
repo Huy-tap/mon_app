@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/history_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/exBackground">
+
+    <!-- Top App Bar (Hình 1 & Hình 2) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/history_title"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lịch sử tập luyện"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:lineHeight="30sp" />
+
+        <!-- Nút + Ghi nhận góc phải -->
+        <TextView
+            android:id="@+id/history_btn_record"
+            style="@style/ExPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="＋ Ghi nhận"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/ex_primary"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Main Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <!-- Card Chọn tháng (<  Tháng MM/yyyy ▾  >) -->
+        <LinearLayout
+            android:id="@+id/history_month_card"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/ex_card"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
+
+            <!-- Nút lùi tháng -->
+            <TextView
+                android:id="@+id/history_btn_prev_month"
+                style="@style/ExText"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="‹"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="?attr/exText"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <!-- Vùng bấm vào để mở lịch cuộn chọn tháng -->
+            <LinearLayout
+                android:id="@+id/history_month_picker_btn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/history_month_text"
+                    style="@style/ExText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tháng 09/2026"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="▾"
+                    android:textSize="14sp"
+                    android:textColor="?attr/exMuted" />
+            </LinearLayout>
+
+            <!-- Nút tiến tháng -->
+            <TextView
+                android:id="@+id/history_btn_next_month"
+                style="@style/ExText"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="›"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="?attr/exText"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- Vùng nội dung danh sách hoặc trạng thái rỗng -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- Trạng thái rỗng: Tháng này chưa có buổi tập (Hình 1) -->
+            <LinearLayout
+                android:id="@+id/history_empty_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <!-- Hình minh họa bo góc -->
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/ex_card"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="MINH HỌA"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/exMuted" />
+                </FrameLayout>
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="24dp" />
+
+                <TextView
+                    android:id="@+id/history_empty_title"
+                    style="@style/ExText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tháng này chưa có buổi tập"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="8dp" />
+
+                <TextView
+                    android:id="@+id/history_empty_desc"
+                    style="@style/ExText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hãy chọn tháng khác để xem lại các buổi đã tập."
+                    android:textSize="14sp"
+                    android:textColor="?attr/exMuted"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Danh sách buổi tập trong tháng (Hình 2) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/history_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="12dp"
+                android:paddingBottom="24dp"
+                android:nestedScrollingEnabled="true"
+                android:overScrollMode="ifContentScrolls"
+                android:visibility="visible" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Bottom Navigation Bar dùng chung -->
+    <include
+        layout="@layout/exercise_nav_xml" />
+
+    <!-- Inset spacer đáy -->
+    <View
+        android:id="@+id/history_bottom_inset"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/exSurface" />
+
+</LinearLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/exBackground">
+
+    <!-- Bộ lọc nhóm cơ cuộn ngang (Filter Chips) -->
+    <HorizontalScrollView
+        android:id="@+id/select_chips_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:id="@+id/select_chips_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="12dp" />
+    </HorizontalScrollView>
+
+    <!-- Danh sách bài tập từ SQLite (RecyclerView) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/select_exercise_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp" />
+
+    <!-- Khung khi chưa có bài tập trong DB hoặc nhóm cơ không có bài -->
+    <LinearLayout
+        android:id="@+id/select_exercise_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/ExText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Không có bài tập"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="6dp" />
+
+        <TextView
+            android:id="@+id/select_empty_message"
+            style="@style/ExText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chưa có bài tập nào thuộc nhóm cơ này."
+            android:textSize="13sp"
+            android:textColor="?attr/exMuted"
+            android:gravity="center" />
+    </LinearLayout>
+
+</LinearLayout>

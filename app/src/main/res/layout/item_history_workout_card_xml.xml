@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/history_item_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/ex_card"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <!-- Dòng tiêu đề buổi tập: X bài · Y phút -->
+    <TextView
+        android:id="@+id/history_item_summary"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2 bài · 25 phút"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="6dp" />
+
+    <!-- Container chứa danh sách tóm tắt các bài tập trong buổi -->
+    <LinearLayout
+        android:id="@+id/history_item_exercises_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+</LinearLayout>

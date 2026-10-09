@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/ex_card"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <!-- Nhãn Hiệp (Hiệp 1, Hiệp 2, ...) -->
+        <TextView
+            android:id="@+id/set_label"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hiệp 1"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Ô nhập số kết quả của hiệp -->
+        <EditText
+            android:id="@+id/set_input_value"
+            style="@style/ExText"
+            android:layout_width="68dp"
+            android:layout_height="36dp"
+            android:background="@drawable/ex_input_number"
+            android:gravity="center"
+            android:text="12"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:inputType="number"
+            android:maxLength="4"
+            android:singleLine="true" />
+
+        <!-- Đơn vị: lần / giây -->
+        <TextView
+            android:id="@+id/set_unit"
+            style="@style/ExText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="lần"
+            android:textSize="13sp"
+            android:textColor="?attr/exMuted" />
+
+    </LinearLayout>
+</LinearLayout>

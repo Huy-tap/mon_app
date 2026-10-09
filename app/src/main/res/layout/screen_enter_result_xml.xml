@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/result_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp">
+
+        <!-- Thông tin tiêu đề bài tập & Nút xem hướng dẫn -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/result_exercise_name"
+                    style="@style/ExText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chống đẩy"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:lineHeight="26sp" />
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="2dp" />
+
+                <TextView
+                    android:id="@+id/result_exercise_muscle"
+                    style="@style/ExText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ngực"
+                    android:textSize="14sp"
+                    android:textColor="?attr/exMuted" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/result_btn_guide"
+                style="@style/ExText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▷ Xem hướng dẫn"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="?attr/exAccent"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="16dp" />
+
+        <!-- Ô nhập: Số hiệp đã thực hiện -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/ex_card"
+            android:padding="14dp">
+
+            <TextView
+                style="@style/ExText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số hiệp đã thực hiện"
+                android:textSize="12sp"
+                android:textColor="?attr/exMuted" />
+
+            <Space
+                android:layout_width="1dp"
+                android:layout_height="4dp" />
+
+            <EditText
+                android:id="@+id/result_sets_count"
+                style="@style/ExText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:text="3"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:inputType="number"
+                android:maxLength="3"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="6dp" />
+
+        <TextView
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Số mặc định chỉ để gợi ý. Hãy nhập kết quả thực tế."
+            android:textSize="12sp"
+            android:textColor="?attr/exMuted" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="16dp" />
+
+        <!-- Tiêu đề nhóm: Số lần từng hiệp (hoặc Số giây từng hiệp) -->
+        <TextView
+            android:id="@+id/result_label_reps_title"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Số lần từng hiệp"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="10dp" />
+
+        <!-- Container chứa các dòng hiệp (động theo số hiệp) -->
+        <LinearLayout
+            android:id="@+id/result_sets_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="16dp" />
+
+        <!-- Tiêu đề nhóm: Thời lượng -->
+        <TextView
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thời lượng"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="10dp" />
+
+        <!-- 2 ô thời lượng: Phút và Giây -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Ô Phút -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/ex_card"
+                android:padding="14dp">
+
+                <TextView
+                    style="@style/ExText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phút"
+                    android:textSize="12sp"
+                    android:textColor="?attr/exMuted" />
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="4dp" />
+
+                <EditText
+                    android:id="@+id/result_input_minutes"
+                    style="@style/ExText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:text="10"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="14dp"
+                android:layout_height="1dp" />
+
+            <!-- Ô Giây -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/ex_card"
+                android:padding="14dp">
+
+                <TextView
+                    style="@style/ExText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Giây"
+                    android:textSize="12sp"
+                    android:textColor="?attr/exMuted" />
+
+                <Space
+                    android:layout_width="1dp"
+                    android:layout_height="4dp" />
+
+                <EditText
+                    android:id="@+id/result_input_seconds"
+                    style="@style/ExText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:text="00"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="6dp" />
+
+        <TextView
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nhập thời gian của bài, gồm nghỉ giữa các hiệp; không tính thời gian nhập liệu."
+            android:textSize="12sp"
+            android:textColor="?attr/exMuted" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="16dp" />
+
+        <!-- Tiêu đề nhóm: Ghi chú -->
+        <TextView
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ghi chú"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="10dp" />
+
+        <!-- Ô nhập ghi chú đa dòng -->
+        <EditText
+            android:id="@+id/result_input_note"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:background="@drawable/ex_card"
+            android:padding="14dp"
+            android:gravity="top|start"
+            android:hint="Thêm ghi chú nếu cần..."
+            android:textColorHint="?attr/exMuted"
+            android:textSize="14sp"
+            android:inputType="textMultiLine|textCapSentences" />
+
+        <!-- Thông báo lỗi (nếu có) -->
+        <TextView
+            android:id="@+id/result_error_text"
+            style="@style/ExText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#DC2626"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="24dp" />
+
+        <!-- Nút Thêm vào phiếu -->
+        <TextView
+            android:id="@+id/result_btn_submit"
+            style="@style/ExPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Thêm vào phiếu"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+    </LinearLayout>
+</ScrollView>

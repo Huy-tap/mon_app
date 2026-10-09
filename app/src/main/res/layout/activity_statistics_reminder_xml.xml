@@ -7,5 +7,5 @@
     <FrameLayout android:id="@+id/module_navigation" android:layout_width="match_parent" android:layout_height="wrap_content">
         <include layout="@layout/exercise_nav_xml" />
     </FrameLayout>
-    <View android:id="@+id/module_bottom_inset" android:layout_width="match_parent" android:layout_height="0dp" />
+    <View android:id="@+id/module_bottom_inset" android:layout_width="match_parent" android:layout_height="0dp" android:background="?attr/exSurface" />
 </LinearLayout>

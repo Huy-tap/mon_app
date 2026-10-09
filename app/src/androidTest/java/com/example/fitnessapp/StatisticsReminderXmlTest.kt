@@ -34,7 +34,17 @@ class StatisticsReminderXmlTest {
                 val sheet=parent?.childFragmentManager?.findFragmentByTag(tag) as? androidx.fragment.app.DialogFragment
                 good=sheet?.dialog?.window?.decorView?.hasWindowFocus()==true && sheet.view?.isLaidOut==true
             }
-            if(good) return
+            if(good) {
+                androidx.test.espresso.Espresso.closeSoftKeyboard()
+                onView(isRoot()).perform(object : androidx.test.espresso.ViewAction {
+                    override fun getConstraints() = isRoot()
+                    override fun getDescription() = "Đợi bảng chọn khôi phục hoàn tất animation và vị trí cửa sổ"
+                    override fun perform(ui: androidx.test.espresso.UiController, view: android.view.View) {
+                        ui.loopMainThreadForAtLeast(500)
+                    }
+                })
+                return
+            }
             Thread.sleep(50)
         }
         fail("Restored sheet did not receive focus: $tag")
@@ -50,6 +60,7 @@ class StatisticsReminderXmlTest {
             if(good) return
             Thread.sleep(50)
         }
+        captureStatistics("failed-sheet-$tag.png")
         fail("Sheet did not close: $tag")
     }
     @Test fun monthCancelConfirmRotateAndBack() {
@@ -57,10 +68,12 @@ class StatisticsReminderXmlTest {
             ready(s,R.id.sessions) { it!="—" }
             var old="";s.onActivity { old=it.findViewById<TextView>(R.id.month).text.toString() }
             onView(withId(R.id.month)).perform(click())
+            sheetReady(s,"month")
             onView(withId(R.id.month9)).perform(click())
             onView(withId(R.id.cancel)).perform(click())
             onView(withId(R.id.month)).check(matches(withText(old)))
             onView(withId(R.id.month)).perform(click())
+            sheetReady(s,"month")
             onView(withId(R.id.month9)).perform(click())
             s.recreate()
             sheetReady(s,"month")
@@ -72,14 +85,16 @@ class StatisticsReminderXmlTest {
             s.recreate()
             onView(withId(R.id.month)).check(matches(withText(selected)))
             onView(withId(R.id.reminders)).perform(click())
-            ready(s,R.id.save) { it=="Lưu cài đặt" }
+            waitForReminder()
             androidx.test.espresso.Espresso.pressBack()
             onView(withId(R.id.month)).check(matches(withText(selected)))
         }
     }
     @Test fun statisticsChartAndEmptyState() {
         ActivityScenario.launch(StatisticsReminderXmlActivity::class.java).use { scenario ->
+            ready(scenario,R.id.sessions) { it!="—" }
             onView(withId(R.id.month)).perform(click())
+            sheetReady(scenario,"month")
             onView(withId(R.id.month9)).perform(click())
             onView(withId(R.id.confirm)).perform(click())
             sheetClosed(scenario,"month")
@@ -89,6 +104,7 @@ class StatisticsReminderXmlTest {
             captureStatistics("statistics-september-updated.png")
             // Chọn tháng trống trong dữ liệu mẫu; test CRUD có thể tạo buổi trong tháng hiện tại.
             onView(withId(R.id.month)).perform(click())
+            sheetReady(scenario,"month")
             onView(withId(R.id.previousYear)).perform(click())
             onView(withId(R.id.month10)).perform(click())
             onView(withId(R.id.confirm)).perform(click())
@@ -109,38 +125,6 @@ class StatisticsReminderXmlTest {
         }
         bitmap.recycle()
     }
-    @Test fun timeCancelValidationWeekDaysSaveAndReopen() {
-        ActivityScenario.launch(StatisticsReminderXmlActivity::class.java).use { s ->
-            onView(withId(R.id.reminders)).perform(click());ready(s,R.id.save) { it=="Lưu cài đặt" }
-            var old="";s.onActivity { old=it.findViewById<TextView>(R.id.time).text.toString() }
-            onView(withId(R.id.changeTime)).perform(scrollTo(),click())
-            onView(withId(R.id.hour)).perform(replaceText("23"));androidx.test.espresso.Espresso.closeSoftKeyboard()
-            onView(withId(R.id.cancel)).perform(click())
-            onView(withId(R.id.time)).check(matches(withText(old)))
-            onView(withId(R.id.changeTime)).perform(scrollTo(),click())
-            onView(withId(R.id.hour)).perform(replaceText("25"));androidx.test.espresso.Espresso.closeSoftKeyboard()
-            onView(withId(R.id.confirm)).perform(click())
-            onView(withId(R.id.hour)).check(matches(hasErrorText("Giờ từ 00 đến 23")))
-            onView(withId(R.id.hour)).perform(replaceText("23"))
-            onView(withId(R.id.minute)).perform(replaceText("59"));androidx.test.espresso.Espresso.closeSoftKeyboard()
-            s.recreate();sheetReady(s,"time")
-            onView(withId(R.id.hour)).check(matches(withText("23")))
-            onView(withId(R.id.minute)).check(matches(withText("59")))
-            onView(withId(R.id.confirm)).perform(click());sheetClosed(s,"time")
-            onView(withId(R.id.weekly)).perform(scrollTo(),click())
-            onView(withId(R.id.day7)).perform(scrollTo(),click())
-            s.recreate()
-            onView(withId(R.id.time)).check(matches(withText("23:59")))
-            onView(withId(R.id.day7)).check(matches(isChecked()))
-            // Keep disabled so tests never create alarms or notification permission dialogs.
-            s.onActivity { it.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.enabled).isChecked=false }
-            onView(withId(R.id.save)).perform(scrollTo(),click())
-            ready(s,R.id.feedback) { it.startsWith("Đã lưu") }
-            androidx.test.espresso.Espresso.pressBack();onView(withId(R.id.reminders)).perform(click());ready(s,R.id.save) { it=="Lưu cài đặt" }
-            onView(withId(R.id.time)).check(matches(withText("23:59")))
-            onView(withId(R.id.day7)).check(matches(isChecked()))
-        }
-    }
     @Test fun statisticsErrorDoesNotBecomeZeroAndRetryRecovers() {
         val context=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().targetContext
         ActivityScenario.launch(StatisticsReminderXmlActivity::class.java).use { scenario ->
@@ -160,13 +144,11 @@ class StatisticsReminderXmlTest {
             onView(withId(R.id.cards)).check(matches(isDisplayed()))
         }
     }
-    @Test fun blockedPermissionStateKeepsFormUsable() {
-        val instrumentation=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
-        assertFalse("Run this suite with POST_NOTIFICATIONS denied on the QA emulator",com.example.fitnessapp.data.ReminderScheduler.permitted(instrumentation.targetContext))
-        ActivityScenario.launch(StatisticsReminderXmlActivity::class.java).use { s ->
-            onView(withId(R.id.reminders)).perform(click());ready(s,R.id.save) { it=="Lưu cài đặt" }
-            onView(withId(R.id.warning)).check(matches(isDisplayed()))
-            onView(withId(R.id.save)).check(matches(isEnabled()))
+    private fun waitForReminder() {
+        val deadline = System.currentTimeMillis() + 10000
+        while (true) {
+            try { onView(withId(R.id.reminder_save)).check(matches(isDisplayed())).check(matches(isEnabled())); return }
+            catch (e: Throwable) { if (System.currentTimeMillis() >= deadline) throw e; Thread.sleep(100) }
         }
     }
 }

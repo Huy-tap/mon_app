@@ -1,6 +1,9 @@
 package com.example.fitnessapp.xmlui
 
+import android.Manifest
 import android.app.Dialog
+import android.net.Uri
+import android.os.Build
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -19,6 +22,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -36,8 +43,17 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-/** App-wide theme is persisted; reminder edits remain a session preview without alarms. */
+/** Trang Cài đặt và form nhắc nhở chung: lưu lịch thật, đặt báo thức, giữ bản nháp khi tạo lại. */
 class SettingsXmlActivity : ComponentActivity() {
+    private lateinit var saveModel: ReminderSaveModel
+    private var savingReminder = false
+    private var pendingPermissionSave = false
+    private val directReminder get() = intent.getBooleanExtra("reminder", false)
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        ReminderScheduler.restore(applicationContext)
+        if (pendingPermissionSave) { pendingPermissionSave = false; completeSave() }
+        else if (ready) render()
+    }
     private var dark = false
     private var savingTheme = false
     private var editing = false
@@ -60,7 +76,10 @@ class SettingsXmlActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         dark = AppTheme.isDark(this)
-        editing = savedInstanceState?.getBoolean("editing") ?: false
+        saveModel = ViewModelProvider(this)[ReminderSaveModel::class.java]
+        savingReminder = saveModel.state.value.busy
+        pendingPermissionSave = savedInstanceState?.getBoolean("pendingPermissionSave") ?: false
+        editing = savedInstanceState?.getBoolean("editing") ?: directReminder
         ready = savedInstanceState?.getBoolean("ready") ?: false
         scrollPosition = savedInstanceState?.getInt("scroll") ?: 0
         settingsScroll = savedInstanceState?.getInt("settingsScroll") ?: 0
@@ -73,6 +92,35 @@ class SettingsXmlActivity : ComponentActivity() {
             override fun handleOnBackPressed() = back()
         })
         render()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                saveModel.state.collect { state ->
+                    val changed = savingReminder != state.busy
+                    savingReminder = state.busy
+                    when {
+                        state.saved != null -> {
+                            reminder = state.saved; draft = state.saved; ready = true
+                            saveModel.consumeResult()
+                            Toast.makeText(this@SettingsXmlActivity, if (state.alarmScheduled) "Đã lưu cài đặt." else
+                                "Đã lưu lịch, nhưng chưa đặt được báo thức. Hãy mở lại ứng dụng.", Toast.LENGTH_LONG).show()
+                            val prefs = getSharedPreferences("permission", MODE_PRIVATE)
+                            if (reminder.isEnabled && Build.VERSION.SDK_INT >= 33 &&
+                                !ReminderScheduler.permitted(this@SettingsXmlActivity) && !prefs.getBoolean("asked", false)) {
+                                prefs.edit().putBoolean("asked", true).apply()
+                                pendingPermissionSave = true
+                                render()
+                                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else completeSave()
+                        }
+                        state.error != null -> {
+                            saveModel.consumeResult(); render()
+                            Toast.makeText(this@SettingsXmlActivity, state.error, Toast.LENGTH_LONG).show()
+                        }
+                        changed -> render()
+                    }
+                }
+            }
+        }
         if (!ready) lifecycleScope.launch {
             runCatching { withContext(Dispatchers.IO) { FitnessController(applicationContext).getPrimaryReminder() } }
                 .onSuccess { reminder = it; draft = it; ready = true; render() }
@@ -87,10 +135,13 @@ class SettingsXmlActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         if (AppTheme.needsRefresh(this)) { recreate(); return }
+        ReminderScheduler.channel(this)
+        ReminderScheduler.restore(applicationContext)
         if (ready) { scrollPosition = findViewById<ScrollView>(R.id.settings_scroll).scrollY; render() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("pendingPermissionSave", pendingPermissionSave)
         outState.putBoolean("dark", dark); outState.putBoolean("editing", editing); outState.putBoolean("ready", ready)
         outState.putInt("scroll", findViewById<ScrollView>(R.id.settings_scroll).scrollY)
         outState.putInt("settingsScroll", settingsScroll)
@@ -248,7 +299,12 @@ class SettingsXmlActivity : ComponentActivity() {
         findViewById<View>(R.id.reminder_toggle).apply {
             isSelected = draft.isEnabled; contentDescription = if (draft.isEnabled) "Tắt nhắc nhở" else "Bật nhắc nhở"
         }
-        text(R.id.reminder_next, "Lần nhắc tiếp theo: ${nextLabel(draft)}")
+        text(R.id.reminder_next, "Lần nhắc tiếp theo: ${if (draft.isEnabled) nextLabel(draft) else "Đang tắt"}")
+        visible(R.id.reminder_exact_access, draft.isEnabled && !ReminderScheduler.exact(this))
+        click(R.id.reminder_exact_access) {
+            if (Build.VERSION.SDK_INT >= 31) startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                Uri.parse("package:$packageName")))
+        }
         visible(R.id.reminder_next_card, !blocked)
         val weekly = draft.repeatType == "WEEKLY"
         visible(R.id.reminder_days, weekly)
@@ -281,13 +337,16 @@ class SettingsXmlActivity : ComponentActivity() {
         click(R.id.reminder_daily) { updateDraft(draft.copy(repeatType = "DAILY")) }
         click(R.id.reminder_weekly) { updateDraft(draft.copy(repeatType = "WEEKLY")) }
         click(R.id.reminder_edit) { showTimePicker() }
+        text(R.id.reminder_save, if (savingReminder) "Đang lưu…" else "Lưu cài đặt")
+        (dayIds + listOf(R.id.reminder_toggle, R.id.reminder_daily, R.id.reminder_weekly,
+            R.id.reminder_edit, R.id.reminder_save)).forEach { findViewById<View>(it).isEnabled = ready && !savingReminder }
         click(R.id.reminder_save) {
+            if (!ready || savingReminder) return@click
             if (weekly && reminderDays(draft.repeatDays).isEmpty()) {
                 Toast.makeText(this, "Chọn ít nhất một ngày trong tuần.", Toast.LENGTH_SHORT).show()
             } else {
-                reminder = draft.copy(id = if (draft.id == 0L) -1 else draft.id)
-                editing = false; scrollPosition = settingsScroll; render()
-                Toast.makeText(this, "Đã cập nhật bản xem thử. Chưa lưu lịch nhắc vào thiết bị.", Toast.LENGTH_LONG).show()
+                scrollPosition = findViewById<ScrollView>(R.id.settings_scroll).scrollY
+                saveModel.save(draft)
             }
         }
     }
@@ -296,13 +355,22 @@ class SettingsXmlActivity : ComponentActivity() {
         scrollPosition = findViewById<ScrollView>(R.id.settings_scroll).scrollY
         render()
     }
+    private fun completeSave() {
+        if (directReminder) { setResult(RESULT_OK); finish() }
+        else { editing = false; scrollPosition = settingsScroll; render() }
+    }
     private fun back() {
-        if (savingTheme) return
+        if (savingTheme || savingReminder) return
+        if (directReminder) { setResult(RESULT_OK); finish(); return }
         if (editing) { editing = false; scrollPosition = settingsScroll; render() }
         else { setResult(RESULT_OK, Intent().putExtra("tab", "HOME")); finish() }
     }
     private fun openSystemSettings() {
-        startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+        val prefs = getSharedPreferences("permission", MODE_PRIVATE)
+        if (Build.VERSION.SDK_INT >= 33 && !prefs.getBoolean("asked", false)) {
+            prefs.edit().putBoolean("asked", true).apply()
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
     }
     private fun showTimePicker() {
         if (picker?.isShowing == true) return
@@ -314,15 +382,22 @@ class SettingsXmlActivity : ComponentActivity() {
         hour.doAfterTextChanged { hour.error = null }
         minute.doAfterTextChanged { minute.error = null }
         hour.setText(pickerHour ?: draft.reminderTime.take(2)); minute.setText(pickerMinute ?: draft.reminderTime.substring(3, 5))
-        dialog.findViewById<View>(R.id.picker_cancel).setOnClickListener { dialog.dismiss() }
+        fun closePicker() {
+            pickerOpen = false; pickerHour = null; pickerMinute = null
+            if (picker === dialog) picker = null
+            dialog.dismiss()
+        }
+        dialog.findViewById<View>(R.id.picker_cancel).setOnClickListener { closePicker() }
         dialog.findViewById<View>(R.id.picker_confirm).setOnClickListener {
             val h = hour.text.toString().toIntOrNull(); val m = minute.text.toString().toIntOrNull()
             if (h == null || h !in 0..23) { hour.error = "Nhập giờ từ 00 đến 23"; return@setOnClickListener }
             if (m == null || m !in 0..59) { minute.error = "Nhập phút từ 00 đến 59"; return@setOnClickListener }
-            dialog.dismiss()
+            closePicker()
             updateDraft(draft.copy(reminderTime = "%02d:%02d:00".format(java.util.Locale.ROOT, h, m)))
         }
-        dialog.setOnDismissListener { pickerOpen = false; pickerHour = null; pickerMinute = null; picker = null }
+        dialog.setOnDismissListener {
+            if (picker === dialog) { pickerOpen = false; pickerHour = null; pickerMinute = null; picker = null }
+        }
         picker = dialog
         dialog.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)); setGravity(Gravity.BOTTOM)

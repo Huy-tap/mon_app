@@ -40,28 +40,14 @@ class StatisticsReminderXmlActivity : AppCompatActivity() {
             setResult(RESULT_OK, Intent().putExtra("tab", tab))
             finish()
         }
-        supportFragmentManager.addOnBackStackChangedListener { renderNavigation() }
         if (state == null) {
-            val first = if (intent.getBooleanExtra("reminder", false)) ReminderFragment() else StatisticsFragment()
-            supportFragmentManager.beginTransaction().replace(R.id.container, first).commitNow()
+            supportFragmentManager.beginTransaction().replace(R.id.container, StatisticsFragment()).commitNow()
+            if (intent.getBooleanExtra("reminder", false)) openReminder()
         }
-        renderNavigation()
     }
 
     fun openReminder() {
-        if (supportFragmentManager.findFragmentById(R.id.container) is ReminderFragment) return
-        supportFragmentManager.beginTransaction().replace(R.id.container, ReminderFragment())
-            .addToBackStack("reminder").commit()
-    }
-
-    fun closeReminder() {
-        if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
-        else finish()
-    }
-
-    private fun renderNavigation() {
-        findViewById<View>(R.id.module_navigation).visibility =
-            if (supportFragmentManager.findFragmentById(R.id.container) is ReminderFragment) View.GONE else View.VISIBLE
+        startActivity(Intent(this, SettingsXmlActivity::class.java).putExtra("reminder", true))
     }
 
     override fun onResume() {

@@ -22,7 +22,12 @@ class ExerciseXmlNavigationTest {
     private fun waitFor(id: Int) {
         val end = System.currentTimeMillis() + 10000
         while (true) {
-            try { onView(withId(id)).check(matches(isDisplayed())); return }
+            try {
+                onView(withId(id)).check(matches(isDisplayed()))
+                // The title can be visible while the new Activity is still moving into place.
+                settleScroll()
+                return
+            }
             catch (e: AssertionError) { if (System.currentTimeMillis() >= end) throw e; Thread.sleep(100) }
             catch (e: androidx.test.espresso.NoMatchingViewException) { if (System.currentTimeMillis() >= end) throw e; Thread.sleep(100) }
         }
@@ -49,17 +54,23 @@ class ExerciseXmlNavigationTest {
             androidx.test.espresso.Espresso.pressBack(); waitFor(R.id.home_record)
         }
     }
-    @Test fun everyUnfinishedEntryIsBlockedWithoutChangingWorkoutsOrDraft() {
+    @Test fun homeHistoryAndRecentEntriesOpenWithoutChangingWorkoutsOrDraft() {
         val controller = FitnessController(context)
         val beforeWorkouts = controller.getAllWorkouts()
         val beforeDraft = controller.getDraft()
         val beforeReminder = controller.getPrimaryReminder()
         ActivityScenario.launch(MainActivity::class.java).use {
             waitFor(R.id.home_record)
-            listOf(R.id.home_record, R.id.home_history, R.id.home_recent).forEach { blocked(it, true) }
-            listOf(R.id.ex_tab_HISTORY).forEach { blocked(it) }
+            onView(withId(R.id.home_history)).perform(scrollTo()); settleScroll()
+            onView(withId(R.id.home_history)).perform(click()); waitFor(R.id.history_title)
+            onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_scroll)
+            onView(withId(R.id.home_recent)).perform(scrollTo()); settleScroll()
+            onView(withId(R.id.home_recent)).perform(click()); waitFor(R.id.detail_title)
+            androidx.test.espresso.Espresso.pressBack(); waitFor(R.id.home_scroll)
+            onView(withId(R.id.ex_tab_HISTORY)).perform(click()); waitFor(R.id.history_title)
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
-            listOf(R.id.ex_tab_HISTORY).forEach { blocked(it) }
+            onView(withId(R.id.ex_tab_HISTORY)).perform(click()); waitFor(R.id.history_title)
+            onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
             onView(withId(R.id.ex_add)).check(matches(isDisplayed()))
         }
         assertEquals(beforeWorkouts, controller.getAllWorkouts())
@@ -89,15 +100,16 @@ class ExerciseXmlNavigationTest {
         }
     }
 
-    @Test fun statisticsTabConnectsHomeAndExercisesAndKeepsUnfinishedTabsLocked() {
+    @Test fun statisticsHistoryExercisesAndSettingsShareNavigation() {
         val controller = FitnessController(context)
         val before = controller.getAllWorkouts()
         ActivityScenario.launch(MainActivity::class.java).use {
             waitFor(R.id.home_record)
             onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
-            blocked(R.id.ex_tab_HISTORY)
+            onView(withId(R.id.ex_tab_HISTORY)).perform(click()); waitFor(R.id.history_title)
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
             onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
+            onView(withId(R.id.ex_tab_SETTINGS)).perform(click()); waitFor(R.id.settings_setup)
             onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
         }
         assertEquals(before, controller.getAllWorkouts())
@@ -107,13 +119,13 @@ class ExerciseXmlNavigationTest {
         ActivityScenario.launch(MainActivity::class.java).use {
             waitFor(R.id.home_record)
             onView(withId(R.id.home_reminder_edit)).perform(scrollTo()); settleScroll()
-            onView(withId(R.id.home_reminder_edit)).perform(click()); waitFor(R.id.back)
-            onView(withId(R.id.back)).perform(click()); waitFor(R.id.home_scroll)
+            onView(withId(R.id.home_reminder_edit)).perform(click()); waitFor(R.id.reminder_back)
+            onView(withId(R.id.reminder_back)).perform(click()); waitFor(R.id.home_scroll)
         }
         val intent = android.content.Intent(context, MainActivity::class.java)
             .putExtra("reminder", true).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
         ActivityScenario.launch<MainActivity>(intent).use {
-            waitFor(R.id.back)
+            waitFor(R.id.reminder_back)
             androidx.test.espresso.Espresso.pressBack(); waitFor(R.id.home_record)
         }
     }
