@@ -38,6 +38,8 @@ class SettingsXmlTest {
             onView(withId(R.id.ex_tab_SETTINGS)).perform(click()); waitFor(R.id.settings_setup)
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
             onView(withId(R.id.ex_tab_SETTINGS)).perform(click()); waitFor(R.id.settings_setup)
+            onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
+            onView(withId(R.id.ex_tab_SETTINGS)).perform(click()); waitFor(R.id.settings_setup)
             onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
         }
     }

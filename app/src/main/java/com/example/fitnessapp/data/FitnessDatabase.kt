@@ -32,6 +32,7 @@ object FitnessDatabase {
         ).also { database ->
             database.setForeignKeyConstraintsEnabled(true)
             migrate(database)
+            BundledExerciseMedia.install(context, database)
             instance = database
         }
     }

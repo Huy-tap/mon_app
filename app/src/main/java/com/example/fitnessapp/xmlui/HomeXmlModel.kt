@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessapp.controller.FitnessController
-import com.example.fitnessapp.data.ReminderScheduler
 import com.example.fitnessapp.model.Reminder
 import com.example.fitnessapp.model.Workout
 import kotlinx.coroutines.Dispatchers
@@ -31,9 +30,7 @@ class HomeXmlModel(application: Application) : AndroidViewModel(application) {
                 val data = withContext(Dispatchers.IO) {
                     val context = getApplication<Application>()
                     val controller = FitnessController(context)
-                    HomeXmlData(controller.getAllWorkouts(), controller.getPrimaryReminder(), controller.getState("dark_theme") == "true").also {
-                        ReminderScheduler.schedule(context, it.reminder)
-                    }
+                    HomeXmlData(controller.getAllWorkouts(), controller.getPrimaryReminder(), controller.getState("dark_theme") == "true")
                 }
                 mutableState.value = HomeXmlState(data)
             } catch (_: Exception) {

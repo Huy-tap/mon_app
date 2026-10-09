@@ -1,4 +1,4 @@
-# Bản XML: Trang chủ, Quản lý bài tập và giao diện Cài đặt
+# Bản XML: Trang chủ, Quản lý bài tập, Thống kê và Nhắc nhở
 
 Mở thư mục `FitnessAppmyworkpart2` bằng Android Studio, chờ Gradle Sync rồi chạy cấu hình `app`.
 
@@ -8,11 +8,13 @@ Phần **Quản lý bài tập** dùng XML và Android Views: danh sách Recycle
 
 **Trang chủ** cũng đã chuyển sang XML, giữ phần tổng kết tháng, buổi tập gần nhất và nhắc nhở từ dữ liệu SQLite hiện có.
 
-**Tạm khóa**: Theo dõi/ghi nhận tập luyện, Lịch sử, Thống kê và chỉnh nhắc nhở từ Trang chủ. Bấm các mục này, nút “Ghi nhận buổi tập”, “Xem tất cả”, thẻ buổi tập gần nhất hoặc “Chỉnh sửa” sẽ hiện “Trang này chưa phát triển”. Sau khi đóng thông báo, người dùng vẫn ở trang đang xem.
+**Thống kê và Nhắc nhở** đã ghép từ `module-ntd`, dùng XML/ViewBinding và Fragment. Vào Thống kê từ thanh điều hướng, vào Nhắc nhở từ nút Chỉnh sửa trên Trang chủ hoặc nút chuông trong Thống kê. Chạm thông báo cũng mở Nhắc nhở.
 
-**Cài đặt** đã mở dưới dạng giao diện XML xem thử; xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md) để biết phạm vi, thiết kế và giới hạn lưu dữ liệu.
+**Tạm khóa**: Theo dõi/ghi nhận tập luyện, Lịch sử. Nút “Ghi nhận buổi tập”, “Xem tất cả” và thẻ buổi tập gần nhất vẫn hiện “Trang này chưa phát triển”. Nút “Bắt đầu tập luyện” trong Thống kê thông báo màn hình tập luyện chưa tích hợp.
 
-`MainActivity` mở trực tiếp Trang chủ XML. Hai màn hình hiện hoạt động không còn cần cầu nối Compose. Thư mục `ui` giữ code cũ để phát triển tiếp; `FitnessMainApp` và `ExerciseXmlRoute` không được gọi trong luồng chạy hiện tại. Không xóa database hay lịch sử khi khóa module.
+`MainActivity` mở trực tiếp Trang chủ XML. Các màn hình đang hoạt động không cần Compose. Đã xóa `ui/StatsScreen.kt` và hàm `ReminderSettingsScreen` cũ. Thư mục `ui` giữ code các module Compose còn lại để phát triển tiếp; `FitnessMainApp` và `ExerciseXmlRoute` không được gọi trong luồng chạy hiện tại. Không xóa database hay lịch sử khi khóa module.
+
+**Cài đặt tổng** đã mở dưới dạng giao diện XML xem thử; xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md). Form lịch nhắc trong Cài đặt hiện chỉ giữ bản nháp trong phiên; module Nhắc nhở từ Trang chủ/Thống kê vẫn hoạt động như trước.
 
 ## File của Trang chủ
 
@@ -40,7 +42,7 @@ Khi phát triển module tiếp theo: hoàn thiện màn hình XML, nối sự k
 ## Dữ liệu và trạng thái
 
 - Giữ cùng applicationId `com.example.fitnessapp`, cấu trúc SQLite, FileProvider và đường dẫn lưu media để cài cập nhật trên app hiện có.
-- Database trong assets và toàn bộ file thuộc `data`, `controller`, `model` giữ nguyên nội dung so với project gốc khi sao chép.
+- Database mẫu đã khai báo ảnh/video cho Push Up bằng đường dẫn `media/...`. `FitnessDatabase` gọi thêm `BundledExerciseMedia` để sao chép media mẫu và bổ sung cho bản đã cài. Các buổi tập, lịch sử và lựa chọn media của người dùng được giữ. Xem [HUONG_DAN_MEDIA_MAU.md](C:/Users/PC1/AndroidStudioProjects/FitnessAppmyworkpart2/HUONG_DAN_MEDIA_MAU.md).
 - ViewModel giữ nội dung nhập khi tạo lại màn hình; Bundle lưu form, màn hình hiện tại, vị trí cuộn và đường dẫn camera để khôi phục sau khi Android đóng tiến trình.
 - Kết quả camera/thư viện được chờ xử lý nếu database chưa tải xong sau khi khôi phục tiến trình.
 - Không gỡ ứng dụng hoặc xóa dữ liệu nếu muốn giữ database hiện có trên thiết bị. Hai thư mục project không tạo hai bộ dữ liệu riêng trên cùng máy khi dùng cùng applicationId.
@@ -61,3 +63,27 @@ Các màn hình Compose cũ và test dựa trên cây giao diện Compose của 
 APK sau khi build: `app/build/outputs/apk/debug/app-debug.apk`.
 
 Phạm vi xác nhận hiện tại là máy ảo Android. Cần đối chiếu thêm trên thiết bị bạn dùng; không coi việc chuyển công nghệ là chứng nhận mọi điểm ảnh và mọi trạng thái trên mọi thiết bị đều giống tuyệt đối.
+
+## File Thống kê và Nhắc nhở
+
+- `xmlui/StatisticsReminderXmlActivity.kt`: chứa hai Fragment, xử lý Back, thanh điều hướng và vùng thanh hệ thống/bàn phím.
+- `xmlui/StatisticsFragment.kt`: chọn tháng, chỉ số, trạng thái trống/lỗi và tải lại khi quay lại.
+- `xmlui/FrequencyChartView.kt`: biểu đồ 4 cột; nhóm cuối gồm ngày 22 đến cuối tháng.
+- `xmlui/ReminderFragment.kt`: form lịch nhắc, quyền thông báo và báo thức chính xác.
+- `xmlui/PickerSheets.kt`: hộp chọn tháng/năm và giờ/phút.
+- `xmlui/UiAssets.kt`: đọc biểu tượng SVG từ `res/raw`.
+- `data/FitnessRepository.kt`: tổng số buổi, tổng phút, lượt bài hoàn thành, tần suất và đọc/lưu lịch chính. `StatisticsTotals` là dữ liệu trả về cho module Thống kê, tránh trùng `model/MonthlyStats` của Trang chủ.
+- `model/ReminderRules.kt`: tính lần nhắc tiếp theo, hỗ trợ DAILY/WEEKLY/ONCE.
+- `data/ReminderScheduler.kt`: AlarmManager, Notification, khôi phục sau boot/đổi giờ/cập nhật app; bỏ qua báo thức cũ.
+- `res/layout/activity_statistics_reminder_xml.xml`: khung màn hình và thanh điều hướng.
+- `res/layout/fragment_statistics.xml`, `fragment_reminder.xml`: hai giao diện chính.
+- `res/layout/sheet_month.xml`, `sheet_time.xml`: hộp chọn.
+- `res/values/statistics_reminder_*.xml`, `res/raw`, các font Inter/Manrope/Outfit và nền đi kèm: tài nguyên module nguồn.
+
+Lịch nhắc vẫn lưu trong bảng `reminders` như module nguồn. SharedPreferences trong module này chỉ lưu trạng thái xin quyền và thông tin lần đặt báo thức; chưa chuyển cấu hình lịch nhắc hoặc giao diện sang SharedPreferences theo đề. Hai màn hình mới giữ giao diện sáng của module nguồn; Trang chủ/Bài tập vẫn giữ cấu hình giao diện trước đó.
+
+Giữ `FitnessDatabase.kt`, database mẫu và media của project đích. Không sao chép database nguồn đè lên dữ liệu hiện tại. `Reminder.kt` giữ bản hiện có vì nội dung tương đương.
+
+Thứ tự đọc luồng: Trang chủ → `HomeXmlActivity.navigate("STATS")` hoặc `openReminder()` → `StatisticsReminderXmlActivity` → Fragment → `FitnessRepository(FitnessDatabase.open(context))` → SQLite. Khi lưu lịch: `ReminderFragment.save()` → repository → `ReminderScheduler.schedule()` → receiver → thông báo → `MainActivity` → Nhắc nhở XML.
+
+Các kiểm thử module mới nằm trong `ReminderRulesTest`, `RepositoryTest`, `StatisticsReminderXmlTest`; kiểm thử điều hướng chung nằm trong `ExerciseXmlNavigationTest`. Instrumentation dùng `IsolatedRunner` với database và cấu hình riêng.
