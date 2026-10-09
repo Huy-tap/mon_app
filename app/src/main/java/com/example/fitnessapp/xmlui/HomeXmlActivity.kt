@@ -26,8 +26,14 @@ open class HomeXmlActivity : ComponentActivity() {
     private lateinit var model: HomeXmlModel
     private var displayedTheme: Boolean? = null
     private var pendingScroll: Int? = null
-    private val exercises = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    private val exercises = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val targetTab = result.data?.getStringExtra("tab")
+        if (targetTab == "HISTORY") {
+            history.launch(Intent(this, WorkoutHistoryXmlActivity::class.java).putExtra("dark", displayedTheme ?: false))
+        }
+    }
     private val recordWorkout = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { model.refresh() }
+    private val history = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { model.refresh() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_ExerciseXml)
@@ -64,14 +70,30 @@ open class HomeXmlActivity : ComponentActivity() {
             insets
         }
         XmlNavigation.bind(this, "HOME", dark) { tab ->
-            if (tab == "EXERCISES") exercises.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
+            when (tab) {
+                "EXERCISES" -> exercises.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
+                "HISTORY" -> history.launch(Intent(this, WorkoutHistoryXmlActivity::class.java).putExtra("dark", dark))
+            }
         }
         findViewById<View>(R.id.home_record).setOnClickListener {
             recordWorkout.launch(Intent(this, RecordWorkoutXmlActivity::class.java).putExtra("dark", displayedTheme ?: false))
         }
-        // TODO: Trang này chưa phát triển. Mở từng chức năng sau khi chuyển sang XML và kiểm thử.
-        listOf(R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { id ->
-            findViewById<View>(id).setOnClickListener { FeatureAvailability.showUnavailable(this) }
+        // Xem tất cả lịch sử tập luyện (Hình 1 & 2)
+        findViewById<View>(R.id.home_history).setOnClickListener {
+            history.launch(Intent(this, WorkoutHistoryXmlActivity::class.java).putExtra("dark", displayedTheme ?: false))
+        }
+        // Bấm vào card buổi tập gần nhất -> mở xem Chi tiết buổi tập (Hình 3)
+        findViewById<View>(R.id.home_recent).setOnClickListener {
+            val recent = model.state.value.data?.workouts?.firstOrNull()
+            if (recent != null) {
+                startActivity(Intent(this, WorkoutDetailXmlActivity::class.java).apply {
+                    putExtra("workout_id", recent.id)
+                    putExtra("dark", displayedTheme ?: false)
+                })
+            }
+        }
+        findViewById<View>(R.id.home_reminder_edit).setOnClickListener {
+            FeatureAvailability.showUnavailable(this)
         }
         findViewById<View>(R.id.home_retry).setOnClickListener { model.refresh() }
     }

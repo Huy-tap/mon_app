@@ -29,6 +29,10 @@
             android:theme="@style/Theme.ExerciseXml" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".xmlui.RecordWorkoutXmlActivity" android:exported="false"
             android:theme="@style/Theme.ExerciseXml" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".xmlui.WorkoutHistoryXmlActivity" android:exported="false"
+            android:theme="@style/Theme.ExerciseXml" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".xmlui.WorkoutDetailXmlActivity" android:exported="false"
+            android:theme="@style/Theme.ExerciseXml" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

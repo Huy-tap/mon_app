@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/ex_card"
+    android:padding="16dp"
+    android:layout_marginBottom="16dp">
+
+    <!-- Tên bài tập -->
+    <TextView
+        android:id="@+id/detail_item_name"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chống đẩy"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="2dp" />
+
+    <!-- Nhóm cơ -->
+    <TextView
+        android:id="@+id/detail_item_muscle"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ngực"
+        android:textSize="13sp"
+        android:textColor="?attr/exMuted" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="10dp" />
+
+    <!-- Danh sách các hiệp tập (Hiệp 1: 12 lần, Hiệp 2: 10 lần...) -->
+    <LinearLayout
+        android:id="@+id/detail_item_sets_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <!-- Thời lượng bài tập -->
+    <TextView
+        android:id="@+id/detail_item_duration"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="10 phút"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Ghi chú nếu có -->
+    <TextView
+        android:id="@+id/detail_item_note"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Ghi chú: Hiệp cuối hơi mỏi"
+        android:textSize="12sp"
+        android:textColor="?attr/exMuted"
+        android:visibility="gone" />
+
+</LinearLayout>

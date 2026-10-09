@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/ex_dialog"
+    android:padding="20dp">
+
+    <!-- Tiêu đề Dialog -->
+    <TextView
+        android:id="@+id/picker_title"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn tháng tập luyện"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="14dp" />
+
+    <!-- Thanh chọn Năm (<  2026  >) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/ex_card"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <TextView
+            android:id="@+id/picker_btn_prev_year"
+            style="@style/ExText"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="‹"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="?attr/exText"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_year_text"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2026"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/picker_btn_next_year"
+            style="@style/ExText"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="›"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="?attr/exText"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="16dp" />
+
+    <!-- Lưới 12 tháng (4 hàng x 3 cột) -->
+    <!-- Hàng 1: Tháng 1, 2, 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picker_month_1"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="6dp"
+            android:gravity="center"
+            android:text="Tháng 1"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_2"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:text="Tháng 2"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_3"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:gravity="center"
+            android:text="Tháng 3"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="8dp" />
+
+    <!-- Hàng 2: Tháng 4, 5, 6 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picker_month_4"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="6dp"
+            android:gravity="center"
+            android:text="Tháng 4"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_5"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:text="Tháng 5"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_6"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:gravity="center"
+            android:text="Tháng 6"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="8dp" />
+
+    <!-- Hàng 3: Tháng 7, 8, 9 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picker_month_7"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="6dp"
+            android:gravity="center"
+            android:text="Tháng 7"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_8"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:text="Tháng 8"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_9"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:gravity="center"
+            android:text="Tháng 9"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="8dp" />
+
+    <!-- Hàng 4: Tháng 10, 11, 12 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picker_month_10"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="6dp"
+            android:gravity="center"
+            android:text="Tháng 10"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_11"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:text="Tháng 11"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/picker_month_12"
+            style="@style/ExText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:gravity="center"
+            android:text="Tháng 12"
+            android:textSize="13sp"
+            android:background="@drawable/ex_chip_unselected"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="18dp" />
+
+    <!-- Nút chọn nhanh Về tháng hiện tại & Nút Đóng -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/picker_btn_current_month"
+            style="@style/ExButton"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ex_pale"
+            android:gravity="center"
+            android:text="Về tháng hiện tại"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="?attr/exText" />
+
+        <TextView
+            android:id="@+id/picker_btn_close"
+            style="@style/ExButton"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/ex_primary"
+            android:gravity="center"
+            android:text="Đóng"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="?attr/exOnPrimary" />
+    </LinearLayout>
+
+</LinearLayout>
