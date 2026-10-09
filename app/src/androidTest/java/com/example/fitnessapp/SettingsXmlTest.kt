@@ -23,6 +23,25 @@ class SettingsXmlTest {
             catch (e: Throwable) { if (System.currentTimeMillis() >= end) throw e; Thread.sleep(100) }
         }
     }
+    private fun waitSelected(id: Int) {
+        val end = System.currentTimeMillis() + 10000
+        while (true) {
+            try { onView(withId(id)).check(matches(isSelected())).check(matches(isEnabled())); return }
+            catch (e: Throwable) { if (System.currentTimeMillis() >= end) throw e; Thread.sleep(100) }
+        }
+    }
+    private fun assertTheme(id: Int, dark: Boolean) {
+        onView(withId(id)).check { view, error ->
+            if (error != null) throw error
+            val night = view.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            assertEquals(if (dark) android.content.res.Configuration.UI_MODE_NIGHT_YES else android.content.res.Configuration.UI_MODE_NIGHT_NO, night)
+            val expected = android.graphics.Color.parseColor(if (dark) "#1C1B1F" else "#F8FAFC")
+            assertEquals(expected, view.context.getColor(R.color.surface))
+            val value = android.util.TypedValue()
+            view.context.theme.resolveAttribute(R.attr.exBackground, value, true)
+            assertEquals(expected, value.data)
+        }
+    }
     private fun capture(name: String) {
         onView(isRoot()).perform(object : androidx.test.espresso.ViewAction {
             override fun getConstraints() = isRoot()
@@ -46,14 +65,14 @@ class SettingsXmlTest {
     @Test fun previewRetainsDraftAndDoesNotWriteDatabase() {
         val controller = FitnessController(context)
         val before = controller.getPrimaryReminder()
-        val theme = controller.getState("dark_theme")
+
         ActivityScenario.launch(SettingsXmlActivity::class.java).use { scenario ->
             waitFor(R.id.settings_setup); capture("settings-light")
-            onView(withId(R.id.settings_dark)).perform(click())
+            onView(withId(R.id.settings_dark)).perform(click()); waitSelected(R.id.settings_dark)
             onView(withId(R.id.settings_dark)).check(matches(isSelected())); capture("settings-dark")
             scenario.recreate(); waitFor(R.id.settings_setup)
             onView(withId(R.id.settings_dark)).check(matches(isSelected()))
-            onView(withId(R.id.settings_light)).perform(click())
+            onView(withId(R.id.settings_light)).perform(click()); waitSelected(R.id.settings_light)
             onView(withId(R.id.settings_setup)).perform(click())
             onView(withId(R.id.reminder_daily)).perform(scrollTo(), click()); capture("settings-daily")
             onView(withId(R.id.reminder_weekly)).perform(scrollTo(), click())
@@ -78,6 +97,40 @@ class SettingsXmlTest {
             capture("settings-preview-saved")
         }
         assertEquals(before, controller.getPrimaryReminder())
-        assertEquals(theme, controller.getState("dark_theme"))
+        assertEquals("false", controller.getState("dark_theme"))
     }
+    @Test fun themeAppliesAcrossAppAndAfterRelaunch() {
+        val controller = FitnessController(context)
+        val original = controller.getState("dark_theme") == "true"
+        try {
+            for (dark in listOf(true, false)) {
+                ActivityScenario.launch(MainActivity::class.java).use {
+                    waitFor(R.id.home_record)
+                    onView(withId(R.id.ex_tab_SETTINGS)).perform(click()); waitFor(R.id.settings_setup)
+                    val choice = if (dark) R.id.settings_dark else R.id.settings_light
+                    onView(withId(choice)).perform(click()); waitSelected(choice)
+                    assertEquals(dark.toString(), controller.getState("dark_theme"))
+                    assertTheme(R.id.settings_root, dark)
+                    onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
+                    assertTheme(R.id.ex_root, dark); capture("global-exercises-$dark")
+                    onView(withId(R.id.ex_tab_STATS)).perform(click()); waitFor(R.id.month)
+                    assertTheme(R.id.module_root, dark); capture("global-statistics-$dark")
+                    onView(withId(R.id.month)).perform(click())
+                    onView(withId(R.id.year)).check(matches(isDisplayed())); capture("global-month-$dark")
+                    onView(withId(R.id.cancel)).perform(click())
+                    onView(withId(R.id.reminders)).perform(click()); waitFor(R.id.back)
+                    assertTheme(R.id.module_root, dark); capture("global-reminder-$dark")
+                    onView(withId(R.id.back)).perform(click()); waitFor(R.id.month)
+                    onView(withId(R.id.ex_tab_HOME)).perform(click()); waitFor(R.id.home_record)
+                    assertTheme(R.id.home_root, dark); capture("global-home-$dark")
+                }
+                // A fresh activity reads the persisted choice rather than a theme Intent extra.
+                ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+                    waitFor(R.id.home_record); assertTheme(R.id.home_root, dark)
+                    scenario.recreate(); waitFor(R.id.home_record); assertTheme(R.id.home_root, dark)
+                }
+            }
+        } finally { controller.setState("dark_theme", original.toString()) }
+    }
+
 }

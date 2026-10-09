@@ -7,9 +7,11 @@ Thiết kế được đọc bằng MCP Figma từ file `kjkcenI9nvQYV8xEku9osc`
 - Nhắc hằng ngày / theo tuần: `288:4964`, `288:5111`.
 - Cảnh báo quyền / chọn giờ: `288:5013`, `288:5170`.
 
-Mở app → tab **Cài đặt**, từ Trang chủ hoặc Bài tập. Chọn Sáng/Tối để xem giao diện, vào **Thiết lập lịch nhắc** để thử bật/tắt, đổi tần suất, chọn ngày và nhập giờ. **Lưu cài đặt** cập nhật bản xem thử trong màn hình; thông báo sau khi bấm giải thích rõ chưa lưu lịch vào thiết bị. Quay lại khi chưa bấm Lưu sẽ bỏ phần chỉnh sửa. Nội dung được giữ khi Android tạo lại Activity.
+Mở app → tab **Cài đặt**, từ Trang chủ hoặc Bài tập. Chọn Sáng/Tối để đổi giao diện toàn ứng dụng; lựa chọn được lưu vào `app_state.dark_theme` và giữ khi mở lại app. Vào **Thiết lập lịch nhắc** để thử bật/tắt, đổi tần suất, chọn ngày và nhập giờ. **Lưu cài đặt** cập nhật bản xem thử trong màn hình; thông báo sau khi bấm giải thích rõ chưa lưu lịch vào thiết bị. Quay lại khi chưa bấm Lưu sẽ bỏ phần chỉnh sửa. Nội dung được giữ khi Android tạo lại Activity.
 
-Màn hình đọc lịch hiện có và quyền thông báo để hiển thị trạng thái ban đầu. Giai đoạn này **chưa ghi SQLite, chưa lưu theme toàn app, chưa đặt/hủy alarm và chưa xin quyền thông báo**. Thoát module rồi mở lại sẽ đọc dữ liệu hiện có. Nút Mở cài đặt hệ thống dẫn đến trang quyền thông báo của ứng dụng.
+Theme được dùng chung qua `xmlui/AppTheme.kt`, các activity nạp đúng chế độ ngay khi mở và cập nhật khi trở lại.
+
+Màn hình đọc lịch hiện có và quyền thông báo để hiển thị trạng thái ban đầu. Giai đoạn này **phần bản nháp lịch nhắc chưa ghi SQLite, chưa đặt/hủy alarm và chưa xin quyền thông báo**. Thoát module rồi mở lại sẽ đọc dữ liệu hiện có. Nút Mở cài đặt hệ thống dẫn đến trang quyền thông báo của ứng dụng.
 
 ## File chính
 
@@ -25,4 +27,4 @@ Dùng thanh trạng thái/thanh hệ thống thật của Android thay cho các 
 
 ## Kiểm tra
 
-Build debug và unit test; kiểm thử máy ảo bằng `SettingsXmlTest` và `ExerciseXmlNavigationTest`. Kiểm tra chuyển Trang chủ ↔ Cài đặt ↔ Bài tập, đổi theme, ngày/giờ, nhập giờ sai, khôi phục form/bảng giờ sau recreate và xác nhận dữ liệu nhắc/theme trong SQLite không bị thay đổi.
+Build debug và unit test; kiểm thử máy ảo bằng `SettingsXmlTest` và `ExerciseXmlNavigationTest`. Kiểm tra chuyển Trang chủ ↔ Cài đặt ↔ Bài tập, đổi theme, ngày/giờ, nhập giờ sai, khôi phục form/bảng giờ sau recreate và xác nhận dữ liệu nhắc trong SQLite không bị thay đổi; xác nhận theme được lưu và áp dụng ở Trang chủ, Bài tập, Thống kê, Nhắc nhở và các bảng chọn.

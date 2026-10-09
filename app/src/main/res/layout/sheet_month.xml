@@ -27,7 +27,7 @@
     <com.google.android.material.button.MaterialButton android:id="@+id/month12" style="@style/Choice" android:text="@string/ui_15" android:layout_margin="4dp" />
   </LinearLayout>
   <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-    <com.google.android.material.button.MaterialButton android:id="@+id/cancel" style="@style/Choice" android:text="@string/ui_16" app:backgroundTint="#F1F5F9" android:textColor="@color/ink" android:layout_marginEnd="12dp" />
-    <com.google.android.material.button.MaterialButton android:id="@+id/confirm" style="@style/Choice" android:text="@string/ui_17" app:backgroundTint="@color/ink" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/cancel" style="@style/Choice" android:text="@string/ui_16" app:backgroundTint="@color/pale" android:textColor="@color/ink" android:layout_marginEnd="12dp" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/confirm" style="@style/Choice" android:text="@string/ui_17" app:backgroundTint="@color/ink" android:textColor="@color/on_ink" />
   </LinearLayout>
 </LinearLayout>

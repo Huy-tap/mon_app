@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.PictureDrawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.TypedValue
@@ -37,9 +36,10 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-/** Figma settings UI. Edits are a session preview; no database writes or alarms. */
+/** App-wide theme is persisted; reminder edits remain a session preview without alarms. */
 class SettingsXmlActivity : ComponentActivity() {
     private var dark = false
+    private var savingTheme = false
     private var editing = false
     private var ready = false
     private var reminder = Reminder()
@@ -51,11 +51,15 @@ class SettingsXmlActivity : ComponentActivity() {
     private var pickerHour: String? = null
     private var pickerMinute: String? = null
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(AppTheme.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_SettingsXml)
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        dark = savedInstanceState?.getBoolean("dark") ?: intent.getBooleanExtra("dark", false)
+        dark = AppTheme.isDark(this)
         editing = savedInstanceState?.getBoolean("editing") ?: false
         ready = savedInstanceState?.getBoolean("ready") ?: false
         scrollPosition = savedInstanceState?.getInt("scroll") ?: 0
@@ -82,6 +86,7 @@ class SettingsXmlActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (AppTheme.needsRefresh(this)) { recreate(); return }
         if (ready) { scrollPosition = findViewById<ScrollView>(R.id.settings_scroll).scrollY; render() }
     }
 
@@ -113,7 +118,7 @@ class SettingsXmlActivity : ComponentActivity() {
     private fun asset(id: Int, name: String) {
         findViewById<ImageView>(id).apply {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-            setImageDrawable(assets.open("figma/settings/$name.svg").use { PictureDrawable(SVG.getFromInputStream(it).renderToPicture()) })
+            setImageDrawable(assets.open("figma/settings/$name.svg").use { renderSvg(this@SettingsXmlActivity, SVG.getFromInputStream(it)) })
         }
     }
     private fun render() {
@@ -179,10 +184,13 @@ class SettingsXmlActivity : ComponentActivity() {
         click(R.id.settings_back) { back() }; click(R.id.settings_system) { openSystemSettings() }
         findViewById<View>(R.id.settings_setup).isEnabled = ready
         click(R.id.settings_setup) {
+            if (savingTheme) return@click
             settingsScroll = findViewById<ScrollView>(R.id.settings_scroll).scrollY
             draft = reminder; editing = true; scrollPosition = 0; render()
         }
-        XmlNavigation.bind(this, "SETTINGS", dark) { tab -> setResult(RESULT_OK, Intent().putExtra("tab", tab)); finish() }
+        XmlNavigation.bind(this, "SETTINGS", dark) { tab ->
+            if (!savingTheme) { setResult(RESULT_OK, Intent().putExtra("tab", tab)); finish() }
+        }
         // Reuse navigation wiring, with the exact E01 icon assets and geometry.
         val icons = listOf(R.id.ex_icon_HOME, R.id.ex_icon_EXERCISES, R.id.ex_icon_HISTORY, R.id.ex_icon_STATS, R.id.ex_icon_SETTINGS)
         val labels = listOf(R.id.ex_tab_label_HOME, R.id.ex_tab_label_EXERCISES, R.id.ex_tab_label_HISTORY, R.id.ex_tab_label_STATS, R.id.ex_tab_label_SETTINGS)
@@ -202,9 +210,23 @@ class SettingsXmlActivity : ComponentActivity() {
         }
     }
     private fun changeTheme(value: Boolean) {
-        if (dark == value) return
-        scrollPosition = findViewById<ScrollView>(R.id.settings_scroll).scrollY
-        dark = value; render()
+        if (dark == value || savingTheme) return
+        savingTheme = true
+        findViewById<View>(R.id.settings_light).isEnabled = false
+        findViewById<View>(R.id.settings_dark).isEnabled = false
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) { AppTheme.save(applicationContext, value) }
+                recreate()
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                savingTheme = false
+                findViewById<View>(R.id.settings_light).isEnabled = true
+                findViewById<View>(R.id.settings_dark).isEnabled = true
+                Toast.makeText(this@SettingsXmlActivity, "Không lưu được giao diện. Vui lòng thử lại.", Toast.LENGTH_LONG).show()
+            }
+        }
     }
     private fun renderReminder() {
         asset(R.id.reminder_back, "reminder_arrowleft")
@@ -215,8 +237,13 @@ class SettingsXmlActivity : ComponentActivity() {
         visible(R.id.reminder_banner, blocked)
         asset(R.id.reminder_banner_icon, "permission_circlealert")
         text(R.id.reminder_status, if (blocked) "Chưa hoạt động" else if (draft.isEnabled) "Đang bật" else "Đang tắt")
-        findViewById<TextView>(R.id.reminder_status).setTextColor(if (blocked) Color.parseColor("#C2410C") else if (dark) color(R.attr.exAccent) else Color.parseColor("#1E3A8A"))
-        if (dark) findViewById<ImageView>(R.id.reminder_back).setColorFilter(color(R.attr.exText))
+        findViewById<TextView>(R.id.reminder_status).setTextColor(if (blocked) getColor(R.color.warning_text) else if (dark) color(R.attr.exAccent) else Color.parseColor("#1E3A8A"))
+        if (dark) {
+            findViewById<ImageView>(R.id.reminder_back).setColorFilter(color(R.attr.exText))
+            findViewById<ImageView>(R.id.reminder_clock).setColorFilter(color(R.attr.exAccent))
+            findViewById<ImageView>(R.id.reminder_warning_icon).setColorFilter(getColor(R.color.warning_text))
+            findViewById<ImageView>(R.id.reminder_banner_icon).setColorFilter(getColor(R.color.warning_text))
+        }
         asset(R.id.reminder_toggle, if (draft.isEnabled) "reminder_switch" else "permission_stateoff")
         findViewById<View>(R.id.reminder_toggle).apply {
             isSelected = draft.isEnabled; contentDescription = if (draft.isEnabled) "Tắt nhắc nhở" else "Bật nhắc nhở"
@@ -270,6 +297,7 @@ class SettingsXmlActivity : ComponentActivity() {
         render()
     }
     private fun back() {
+        if (savingTheme) return
         if (editing) { editing = false; scrollPosition = settingsScroll; render() }
         else { setResult(RESULT_OK, Intent().putExtra("tab", "HOME")); finish() }
     }

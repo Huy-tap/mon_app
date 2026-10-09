@@ -53,8 +53,12 @@ class ExerciseXmlActivity : ComponentActivity() {
     private val photoCamera = registerForActivityResult(ActivityResultContracts.TakePicture()) { model.captured(it) }
     private val videoCamera = registerForActivityResult(ActivityResultContracts.CaptureVideo()) { model.captured(it) }
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(AppTheme.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val dark = intent.getBooleanExtra("dark", false)
+        val dark = AppTheme.isDark(this)
         setTheme(if (dark) R.style.Theme_ExerciseXml_Dark else R.style.Theme_ExerciseXml)
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -103,7 +107,7 @@ class ExerciseXmlActivity : ComponentActivity() {
         capturePosition(); outState.putBundle("exerciseState", model.saveState()); super.onSaveInstanceState(outState)
     }
     override fun onPause() { capturePosition(); player?.pause(); super.onPause() }
-    override fun onResume() { super.onResume(); if (::model.isInitialized && model.playerPlaying) player?.start() }
+    override fun onResume() { super.onResume(); if (AppTheme.needsRefresh(this)) { recreate(); return }; if (::model.isInitialized && model.playerPlaying) player?.start() }
     override fun onDestroy() {
         changingView = true; sourceDialog?.dismiss(); popup?.dismiss(); busyDialog?.dismiss(); player?.stopPlayback()
         super.onDestroy()

@@ -47,17 +47,17 @@ class FrequencyChartView @JvmOverloads constructor(context: Context, attrs: Attr
         counts.forEachIndexed { index, count ->
             val left = index * (columnWidth + gap)
             val top = bottom - count * unit
-            paint.color = Color.parseColor(if (count == maximum && count > 0) "#111827" else "#E5E7EB")
+            paint.color = context.getColor(if (count == maximum && count > 0) R.color.ink else R.color.outline)
             path.reset()
             val radius = minOf(6 * density, (bottom - top) / 2)
             path.addRoundRect(RectF(left, top, left + columnWidth, bottom),
                 floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f), Path.Direction.CW)
             canvas.drawPath(path, paint)
             paint.typeface = bold
-            paint.color = Color.parseColor("#111827")
+            paint.color = context.getColor(R.color.ink)
             canvas.drawText(count.toString(), left + columnWidth / 2, top - 8 * density - paint.fontMetrics.descent, paint)
             paint.typeface = regular
-            paint.color = Color.parseColor("#6B7280")
+            paint.color = context.getColor(R.color.muted)
             canvas.drawText(context.getString(R.string.statistics_week, index + 1), left + columnWidth / 2, labelBaseline, paint)
         }
     }

@@ -18,8 +18,8 @@ class MonthSheet: BottomSheetDialogFragment() {
         val buttons=listOf(b.month1,b.month2,b.month3,b.month4,b.month5,b.month6,b.month7,b.month8,b.month9,b.month10,b.month11,b.month12)
         fun render() { b.year.text="Năm ${selected.year}";buttons.forEachIndexed { i,v ->
             val active=i+1==selected.monthValue
-            v.backgroundTintList=ColorStateList.valueOf(Color.parseColor(if(active) "#111827" else "#F1F5F9"))
-            v.setTextColor(Color.parseColor(if(active) "#FFFFFF" else "#111827"))
+            v.backgroundTintList=ColorStateList.valueOf(requireContext().getColor(if(active) R.color.ink else R.color.pale))
+            v.setTextColor(requireContext().getColor(if(active) R.color.on_ink else R.color.ink))
         } }
         b.previousYear.asset(R.raw.chevron_left);b.nextYear.asset(R.raw.chevron_right)
         b.previousYear.setOnClickListener { if(selected.year>1) selected=selected.minusYears(1);render() }

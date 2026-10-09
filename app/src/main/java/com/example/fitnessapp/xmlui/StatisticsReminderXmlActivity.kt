@@ -12,14 +12,20 @@ import com.example.fitnessapp.data.ReminderScheduler
 
 /** Khung XML cho Thống kê và Nhắc nhở, dùng chung điều hướng với Trang chủ. */
 class StatisticsReminderXmlActivity : AppCompatActivity() {
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(AppTheme.wrap(newBase))
+    }
+
     override fun onCreate(state: Bundle?) {
+        val dark = AppTheme.isDark(this)
+        delegate.localNightMode = if (dark) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
         super.onCreate(state)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_statistics_reminder_xml)
         val root = findViewById<View>(R.id.module_root)
         WindowCompat.getInsetsController(window, root).apply {
-            isAppearanceLightStatusBars = true
-            isAppearanceLightNavigationBars = true
+            isAppearanceLightStatusBars = !dark
+            isAppearanceLightNavigationBars = !dark
         }
         ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
@@ -30,7 +36,7 @@ class StatisticsReminderXmlActivity : AppCompatActivity() {
             }
             insets
         }
-        XmlNavigation.bind(this, "STATS", false) { tab ->
+        XmlNavigation.bind(this, "STATS", dark) { tab ->
             setResult(RESULT_OK, Intent().putExtra("tab", tab))
             finish()
         }
@@ -60,6 +66,7 @@ class StatisticsReminderXmlActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (AppTheme.needsRefresh(this)) { recreate(); return }
         ReminderScheduler.restore(applicationContext)
     }
 }

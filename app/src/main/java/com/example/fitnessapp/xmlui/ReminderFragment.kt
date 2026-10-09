@@ -110,8 +110,8 @@ class ReminderFragment: Fragment() {
             b.legacy.isVisible=r.repeatType=="ONCE";b.legacy.text="Lịch một lần: ${r.scheduledDate}. Chọn chế độ để đổi lịch."
             listOf(b.daily to "DAILY",b.weekly to "WEEKLY").forEach { (button,type) ->
                 val active=r.repeatType==type
-                button.backgroundTintList=ColorStateList.valueOf(Color.parseColor(if(active) "#1E3A8A" else "#FFFFFF"))
-                button.setTextColor(Color.parseColor(if(active) "#FFFFFF" else "#6B7280"))
+                button.backgroundTintList=ColorStateList.valueOf(requireContext().getColor(if(active) R.color.blue else R.color.card_surface))
+                button.setTextColor(if(active) Color.WHITE else requireContext().getColor(R.color.muted))
             }
             days().forEachIndexed { i,v -> v.isChecked=i+1 in reminderDays(r.repeatDays);v.isEnabled=!busy }
         }

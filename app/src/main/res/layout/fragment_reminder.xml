@@ -5,13 +5,13 @@
       <TextView android:id="@+id/title" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_19" android:textSize="20sp" android:layout_width="0dp" android:layout_weight="1" />
     </LinearLayout>
     <LinearLayout style="@style/Card" android:id="@+id/warning" android:layout_marginBottom="16dp" android:background="@drawable/warning_card">
-      <TextView android:id="@+id/warningTitle" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_20" android:textSize="16sp" android:textColor="#C2410C" />
+      <TextView android:id="@+id/warningTitle" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_20" android:textSize="16sp" android:textColor="@color/warning_text" />
       <TextView android:id="@+id/warningText" style="@style/Text" android:text="@string/ui_21" android:layout_marginVertical="16dp" />
       <com.google.android.material.button.MaterialButton android:id="@+id/permission" style="@style/Action" android:text="@string/ui_22" />
     </LinearLayout>
     <LinearLayout style="@style/Card">
       <TextView android:id="@+id/toggleTitle" style="@style/Title" android:fontFamily="@font/outfit" android:text="@string/ui_23" android:textSize="18sp" />
-      <TextView android:id="@+id/toggleStatus" style="@style/Text" android:text="" android:textColor="@color/blue" android:layout_marginTop="4dp" />
+      <TextView android:id="@+id/toggleStatus" style="@style/Text" android:text="" android:textColor="@color/accent_text" android:layout_marginTop="4dp" />
       <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/enabled" android:layout_width="wrap_content" android:layout_height="48dp" android:contentDescription="@string/ui_24" android:thumb="@drawable/switch_thumb" app:track="@drawable/switch_track" app:thumbTint="@null" app:trackTint="@null" app:switchMinWidth="52dp" app:useMaterialThemeColors="false" app:splitTrack="false" />
     </LinearLayout>
     <LinearLayout style="@style/Card" android:layout_marginTop="16dp" android:padding="16dp">

@@ -30,13 +30,17 @@ open class HomeXmlActivity : ComponentActivity() {
         if (result.resultCode == RESULT_OK) result.data?.getStringExtra("tab")?.let { navigate(it) }
     }
 
+    override fun attachBaseContext(newBase: android.content.Context) {
+        super.attachBaseContext(AppTheme.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_ExerciseXml)
+        setTheme(if (AppTheme.isDark(this)) R.style.Theme_ExerciseXml_Dark else R.style.Theme_ExerciseXml)
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         pendingScroll = savedInstanceState?.getInt("homeScroll")
         model = ViewModelProvider(this)[HomeXmlModel::class.java]
-        showLayout(model.state.value.data?.dark ?: false)
+        showLayout(AppTheme.isDark(this))
         lifecycleScope.launch { model.state.collect { render(it) } }
         if (savedInstanceState == null && intent.getBooleanExtra("reminder", false)) {
             intent.removeExtra("reminder")
@@ -46,6 +50,7 @@ open class HomeXmlActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (AppTheme.needsRefresh(this)) { recreate(); return }
         model.refresh()
         ReminderScheduler.restore(applicationContext)
     }
@@ -60,7 +65,7 @@ open class HomeXmlActivity : ComponentActivity() {
     }
 
     private fun navigate(tab: String) {
-        val dark = model.state.value.data?.dark ?: false
+        val dark = AppTheme.isDark(this)
         when (tab) {
             "EXERCISES" -> screens.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
             "SETTINGS" -> screens.launch(Intent(this, SettingsXmlActivity::class.java).putExtra("dark", dark))
@@ -107,9 +112,9 @@ open class HomeXmlActivity : ComponentActivity() {
 
     private fun render(state: HomeXmlState) {
         val data = state.data
-        if (data != null && displayedTheme != data.dark) {
+        if (data != null && displayedTheme != AppTheme.isDark(this)) {
             if (pendingScroll == null) pendingScroll = findViewById<ScrollView>(R.id.home_scroll).scrollY
-            showLayout(data.dark)
+            showLayout(AppTheme.isDark(this))
         }
         findViewById<View>(R.id.home_loading).visibility = if (data == null && state.error == null) View.VISIBLE else View.GONE
         findViewById<View>(R.id.home_error).visibility = if (state.error != null) View.VISIBLE else View.GONE

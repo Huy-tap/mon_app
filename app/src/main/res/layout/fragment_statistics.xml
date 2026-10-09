@@ -36,8 +36,8 @@
       <ImageView android:id="@+id/stateIcon" android:layout_width="72dp" android:layout_height="72dp" android:padding="18dp" android:layout_gravity="center" android:contentDescription="@null" android:background="@drawable/illustration_circle" />
       <TextView android:id="@+id/stateTitle" style="@style/Title" android:text="" android:textSize="16sp" android:gravity="center" android:layout_marginTop="20dp" />
       <TextView android:id="@+id/stateMessage" style="@style/Text" android:text="" android:gravity="center" android:textColor="@color/muted" android:layout_marginTop="16dp" />
-      <com.google.android.material.button.MaterialButton android:id="@+id/retry" style="@style/Action" android:text="@string/ui_52" android:layout_marginTop="20dp" android:layout_height="48dp" app:cornerRadius="12dp" android:textStyle="bold" app:backgroundTint="@color/ink" />
-      <com.google.android.material.button.MaterialButton android:id="@+id/startWorkout" style="@style/Action" android:layout_height="48dp" android:text="@string/statistics_start" android:textStyle="bold" android:layout_marginTop="16dp" app:cornerRadius="12dp" app:backgroundTint="@color/ink" android:visibility="gone" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/retry" style="@style/Action" android:text="@string/ui_52" android:layout_marginTop="20dp" android:layout_height="48dp" app:cornerRadius="12dp" android:textStyle="bold" app:backgroundTint="@color/ink" android:textColor="@color/on_ink" />
+      <com.google.android.material.button.MaterialButton android:id="@+id/startWorkout" style="@style/Action" android:layout_height="48dp" android:text="@string/statistics_start" android:textStyle="bold" android:layout_marginTop="16dp" app:cornerRadius="12dp" app:backgroundTint="@color/ink" android:textColor="@color/on_ink" android:visibility="gone" />
     </LinearLayout>
   </LinearLayout>
 </ScrollView>

@@ -1,13 +1,19 @@
 <resources>
-  <style name="Theme.Fitness" parent="Theme.MaterialComponents.Light.NoActionBar">
-    <item name="exBackground">#F8FAFC</item>
-    <item name="exSurface">#FFFFFF</item>
-    <item name="exText">#111827</item>
-    <item name="exMuted">#6B7280</item>
-    <item name="exAccent">#2563EB</item>
+  <style name="Theme.Fitness" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="exBackground">@color/surface</item>
+    <item name="exSurface">@color/card_surface</item>
+    <item name="exText">@color/ink</item>
+    <item name="exMuted">@color/muted</item>
+    <item name="exAccent">@color/nav_accent</item>
     <item name="bottomSheetDialogTheme">@style/FitnessSheetDialog</item>
         <item name="colorPrimary">@color/blue</item>
     <item name="colorSecondary">@color/blue</item>
+    <item name="colorSurface">@color/card_surface</item>
+    <item name="colorOnSurface">@color/ink</item>
+    <item name="colorOnPrimary">#FFFFFF</item>
+    <item name="android:colorBackground">@color/surface</item>
+    <item name="android:textColorPrimary">@color/ink</item>
+    <item name="android:textColorSecondary">@color/muted</item>
     <item name="android:windowLightStatusBar">true</item>
     <item name="android:windowLightNavigationBar">true</item>
     <item name="android:windowBackground">@color/surface</item>
@@ -64,7 +70,7 @@
 <item name="bottomSheetStyle">@style/FitnessSheet</item>
 </style>
 <style name="FitnessSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
-<item name="shapeAppearanceOverlay">@style/FitnessSheetShape</item><item name="backgroundTint">#FFFFFF</item>
+<item name="shapeAppearanceOverlay">@style/FitnessSheetShape</item><item name="backgroundTint">@color/card_surface</item>
 </style>
 <style name="FitnessSheetShape"><item name="cornerFamily">rounded</item><item name="cornerSizeTopLeft">28dp</item><item name="cornerSizeTopRight">28dp</item><item name="cornerSizeBottomLeft">0dp</item><item name="cornerSizeBottomRight">0dp</item></style>
 </resources>
