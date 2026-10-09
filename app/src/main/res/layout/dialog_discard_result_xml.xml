@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/ex_dialog"
+    android:padding="24dp">
+
+    <!-- Tiêu đề: Bỏ thay đổi? (Ảnh 5) -->
+    <TextView
+        android:id="@+id/dialog_title"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bỏ thay đổi?"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="?attr/exText" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="12dp" />
+
+    <!-- Nội dung mô tả (Ảnh 5) -->
+    <TextView
+        android:id="@+id/dialog_message"
+        style="@style/ExText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kết quả bài này chưa được thêm vào phiếu. Nếu thoát, những gì bạn vừa nhập sẽ bị bỏ."
+        android:textSize="14sp"
+        android:lineHeight="20sp"
+        android:textColor="?attr/exText" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="24dp" />
+
+    <!-- Nút Bỏ thay đổi (Primary, tối màu, ở trên) -->
+    <TextView
+        android:id="@+id/dialog_btn_discard"
+        style="@style/ExPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="Bỏ thay đổi"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="1dp"
+        android:layout_height="12dp" />
+
+    <!-- Nút Tiếp tục nhập (Secondary, sáng màu, ở dưới) -->
+    <TextView
+        android:id="@+id/dialog_btn_continue"
+        style="@style/ExButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/ex_pale"
+        android:gravity="center"
+        android:text="Tiếp tục nhập"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="?attr/exText" />
+
+</LinearLayout>

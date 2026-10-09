@@ -27,6 +27,7 @@ open class HomeXmlActivity : ComponentActivity() {
     private var displayedTheme: Boolean? = null
     private var pendingScroll: Int? = null
     private val exercises = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    private val recordWorkout = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { model.refresh() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_ExerciseXml)
@@ -65,8 +66,11 @@ open class HomeXmlActivity : ComponentActivity() {
         XmlNavigation.bind(this, "HOME", dark) { tab ->
             if (tab == "EXERCISES") exercises.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
         }
+        findViewById<View>(R.id.home_record).setOnClickListener {
+            recordWorkout.launch(Intent(this, RecordWorkoutXmlActivity::class.java).putExtra("dark", displayedTheme ?: false))
+        }
         // TODO: Trang này chưa phát triển. Mở từng chức năng sau khi chuyển sang XML và kiểm thử.
-        listOf(R.id.home_record, R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { id ->
+        listOf(R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { id ->
             findViewById<View>(id).setOnClickListener { FeatureAvailability.showUnavailable(this) }
         }
         findViewById<View>(R.id.home_retry).setOnClickListener { model.refresh() }
