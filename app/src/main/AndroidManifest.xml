@@ -25,6 +25,8 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
+        <activity android:name=".xmlui.SettingsXmlActivity" android:exported="false"
+            android:theme="@style/Theme.SettingsXml" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".xmlui.ExerciseXmlActivity" android:exported="false"
             android:theme="@style/Theme.ExerciseXml" android:windowSoftInputMode="adjustResize" />
         <activity

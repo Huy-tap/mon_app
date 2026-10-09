@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" android:background="@drawable/ex_sheet">
+    <View android:layout_width="40dp" android:layout_height="4dp" android:layout_gravity="center" android:background="#D1D5DB"/>
+    <Space android:layout_width="1dp" android:layout_height="24dp"/>
+    <TextView android:id="@+id/picker_title" style="@style/SettingsText" android:text="Chọn thời gian" android:textSize="20sp" android:textStyle="bold" android:lineHeight="24sp"/>
+    <Space android:layout_width="1dp" android:layout_height="24dp"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center">
+        <LinearLayout android:orientation="vertical" android:layout_width="100dp" android:layout_height="80dp" android:background="@drawable/settings_option">
+            <EditText android:id="@+id/picker_hour" style="@style/SettingsText" android:layout_width="match_parent" android:layout_height="54dp" android:textSize="36sp" android:textStyle="bold" android:gravity="center" android:inputType="number" android:maxLength="2" android:selectAllOnFocus="true" android:background="@null" android:contentDescription="Giờ"/>
+            <TextView android:id="@+id/picker_label_hour" style="@style/SettingsText" android:text="Giờ" android:textSize="12sp" android:gravity="center" android:textColor="?attr/settingsMuted"/>
+        </LinearLayout>
+        <TextView android:id="@+id/picker_colon" style="@style/SettingsText" android:text=":" android:textSize="36sp" android:layout_width="30dp" android:gravity="center"/>
+        <LinearLayout android:orientation="vertical" android:layout_width="100dp" android:layout_height="80dp" android:background="@drawable/settings_option">
+            <EditText android:id="@+id/picker_minute" style="@style/SettingsText" android:layout_width="match_parent" android:layout_height="54dp" android:textSize="36sp" android:textStyle="bold" android:gravity="center" android:inputType="number" android:maxLength="2" android:selectAllOnFocus="true" android:background="@null" android:contentDescription="Phút"/>
+            <TextView android:id="@+id/picker_label_minute" style="@style/SettingsText" android:text="Phút" android:textSize="12sp" android:gravity="center" android:textColor="?attr/settingsMuted"/>
+        </LinearLayout>
+    </LinearLayout>
+    <Space android:layout_width="1dp" android:layout_height="24dp"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+        <TextView android:id="@+id/picker_cancel" style="@style/SettingsText" android:text="Hủy" android:textSize="14sp" android:gravity="center" android:padding="10dp" android:clickable="true" android:focusable="true" android:layout_width="0dp" android:layout_weight="1" android:background="@drawable/settings_option" android:minHeight="48dp"/>
+        <TextView android:id="@+id/picker_confirm" style="@style/SettingsText" android:text="Xác nhận" android:textSize="14sp" android:gravity="center" android:padding="10dp" android:clickable="true" android:focusable="true" android:layout_width="0dp" android:layout_weight="1" android:layout_marginStart="15dp" android:background="@drawable/settings_segment" android:textColor="#FFFFFF" android:minHeight="48dp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -57,9 +57,9 @@ class ExerciseXmlNavigationTest {
         ActivityScenario.launch(MainActivity::class.java).use {
             waitFor(R.id.home_record)
             listOf(R.id.home_record, R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { blocked(it, true) }
-            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
+            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS).forEach { blocked(it) }
             onView(withId(R.id.ex_tab_EXERCISES)).perform(click()); waitFor(R.id.ex_add)
-            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS, R.id.ex_tab_SETTINGS).forEach { blocked(it) }
+            listOf(R.id.ex_tab_HISTORY, R.id.ex_tab_STATS).forEach { blocked(it) }
             onView(withId(R.id.ex_add)).check(matches(isDisplayed()))
         }
         assertEquals(beforeWorkouts, controller.getAllWorkouts())

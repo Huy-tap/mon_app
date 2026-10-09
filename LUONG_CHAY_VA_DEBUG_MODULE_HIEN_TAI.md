@@ -1,5 +1,8 @@
 # Luồng chạy hiện tại — Trang chủ và Quản lý bài tập
 
+> Cập nhật giao diện Cài đặt: tab SETTINGS đã mở bằng XML để xem thử. Phần mô tả khóa Cài đặt bên dưới là trạng thái trước lần cập nhật này. Xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md) cho luồng hiện tại.
+
+
 Tài liệu này bám theo code trong **FitnessAppmyworkpart2**. Đọc từ trên xuống như đang theo dõi Debug: thao tác → hàm xử lý → dữ liệu → giao diện.
 
 **Phạm vi đang mở:** Trang chủ và Quản lý bài tập dùng XML. Ghi nhận tập luyện, Lịch sử, Thống kê, Cài đặt và chỉnh nhắc nhở đang khóa. Trang chủ vẫn đọc dữ liệu cũ để hiển thị tổng quan.

@@ -26,7 +26,18 @@ open class HomeXmlActivity : ComponentActivity() {
     private lateinit var model: HomeXmlModel
     private var displayedTheme: Boolean? = null
     private var pendingScroll: Int? = null
-    private val exercises = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    private val modules = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        result.data?.getStringExtra("tab")?.let { openTab(it) }
+    }
+
+    private fun openTab(tab: String) {
+        val destination = when (tab) {
+            "EXERCISES" -> ExerciseXmlActivity::class.java
+            "SETTINGS" -> SettingsXmlActivity::class.java
+            else -> return
+        }
+        modules.launch(Intent(this, destination).putExtra("dark", displayedTheme ?: false))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_ExerciseXml)
@@ -63,7 +74,7 @@ open class HomeXmlActivity : ComponentActivity() {
             insets
         }
         XmlNavigation.bind(this, "HOME", dark) { tab ->
-            if (tab == "EXERCISES") exercises.launch(Intent(this, ExerciseXmlActivity::class.java).putExtra("dark", dark))
+            openTab(tab)
         }
         // TODO: Trang này chưa phát triển. Mở từng chức năng sau khi chuyển sang XML và kiểm thử.
         listOf(R.id.home_record, R.id.home_history, R.id.home_recent, R.id.home_reminder_edit).forEach { id ->

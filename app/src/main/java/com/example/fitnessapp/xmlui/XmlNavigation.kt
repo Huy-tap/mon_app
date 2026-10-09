@@ -13,9 +13,9 @@ import com.caverock.androidsvg.SVG
 import com.example.fitnessapp.R
 
 object FeatureAvailability {
-    // TODO: Trang này chưa phát triển: Theo dõi tập luyện, Lịch sử, Thống kê, Cài đặt.
+    // TODO: Trang này chưa phát triển: Theo dõi tập luyện, Lịch sử, Thống kê.
     // Chỉ mở từng module sau khi hoàn thiện giao diện XML và kiểm thử chức năng.
-    val availableTabs = setOf("HOME", "EXERCISES")
+    val availableTabs = setOf("HOME", "EXERCISES", "SETTINGS")
     fun showUnavailable(context: Context) {
         AlertDialog.Builder(context).setMessage("Trang này chưa phát triển")
             .setPositiveButton("Đóng", null).show()

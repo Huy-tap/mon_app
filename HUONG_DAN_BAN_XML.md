@@ -1,4 +1,4 @@
-# Bản XML: Trang chủ và Quản lý bài tập
+# Bản XML: Trang chủ, Quản lý bài tập và giao diện Cài đặt
 
 Mở thư mục `FitnessAppmyworkpart2` bằng Android Studio, chờ Gradle Sync rồi chạy cấu hình `app`.
 
@@ -8,7 +8,9 @@ Phần **Quản lý bài tập** dùng XML và Android Views: danh sách Recycle
 
 **Trang chủ** cũng đã chuyển sang XML, giữ phần tổng kết tháng, buổi tập gần nhất và nhắc nhở từ dữ liệu SQLite hiện có.
 
-**Tạm khóa**: Theo dõi/ghi nhận tập luyện, Lịch sử, Thống kê, Cài đặt và chỉnh nhắc nhở. Bấm các mục này, nút “Ghi nhận buổi tập”, “Xem tất cả”, thẻ buổi tập gần nhất hoặc “Chỉnh sửa” sẽ hiện “Trang này chưa phát triển”. Sau khi đóng thông báo, người dùng vẫn ở trang đang xem.
+**Tạm khóa**: Theo dõi/ghi nhận tập luyện, Lịch sử, Thống kê và chỉnh nhắc nhở từ Trang chủ. Bấm các mục này, nút “Ghi nhận buổi tập”, “Xem tất cả”, thẻ buổi tập gần nhất hoặc “Chỉnh sửa” sẽ hiện “Trang này chưa phát triển”. Sau khi đóng thông báo, người dùng vẫn ở trang đang xem.
+
+**Cài đặt** đã mở dưới dạng giao diện XML xem thử; xem [GIAO_DIEN_CAI_DAT.md](GIAO_DIEN_CAI_DAT.md) để biết phạm vi, thiết kế và giới hạn lưu dữ liệu.
 
 `MainActivity` mở trực tiếp Trang chủ XML. Hai màn hình hiện hoạt động không còn cần cầu nối Compose. Thư mục `ui` giữ code cũ để phát triển tiếp; `FitnessMainApp` và `ExerciseXmlRoute` không được gọi trong luồng chạy hiện tại. Không xóa database hay lịch sử khi khóa module.
 
