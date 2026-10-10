@@ -48,12 +48,20 @@ class BundledExerciseMediaTest {
         assertNotNull(MediaStorage.videoDuration(video))
         context.assets.open("media/images/pushup.png").use { assertArrayEquals(it.readBytes(), File(image).readBytes()) }
         context.assets.open("media/videos/pushup.mp4").use { assertArrayEquals(it.readBytes(), File(video).readBytes()) }
+        val squatImage = field("instruction_image", 4)!!
+        val squatVideo = field("instruction_video", 4)!!
+        assertNotNull(BitmapFactory.decodeFile(squatImage))
+        assertNotNull(MediaStorage.videoDuration(squatVideo))
+        context.assets.open("media/images/squat.png").use { assertArrayEquals(it.readBytes(), File(squatImage).readBytes()) }
+        context.assets.open("media/videos/squat.mp4").use { assertArrayEquals(it.readBytes(), File(squatVideo).readBytes()) }
         val modified = File(image).lastModified()
         db.close()
         db = SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READWRITE)
         BundledExerciseMedia.install(context, db)
         assertEquals(image, field("instruction_image"))
         assertEquals(modified, File(image).lastModified())
+        assertEquals(squatImage, field("instruction_image", 4))
+        assertEquals(squatVideo, field("instruction_video", 4))
         assertEquals(workouts, countWorkouts())
     }
 
@@ -96,6 +104,7 @@ class BundledExerciseMediaTest {
     }
 
     @Test fun mappingWorksForAnotherIdAndMissingAssetCanBeRetried() {
+        db.execSQL("UPDATE exercises SET instruction_image=NULL WHERE exercise_id=4")
         val missing = BundledExerciseMedia.Entry(4, "instruction_image", "media/images/not-present.png")
         val valid = BundledExerciseMedia.Entry(4, "instruction_image", "media/images/pushup.png")
         BundledExerciseMedia.installEntries(context, db, listOf(missing))

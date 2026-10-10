@@ -161,4 +161,30 @@ class ExerciseXmlTest {
             onView(withId(R.id.ex_name_input)).check(matches(isDisplayed()))
         }
     }
+    @Test fun deleteThenAddSameNameThroughUiKeepsOldWorkout() {
+        val controller = FitnessController(context)
+        val name = "XML thêm lại ${System.nanoTime()}"
+        val oldId = controller.insertExercise(Exercise(name = name, muscleGroup = "Ngực"))
+        val workout = controller.saveWorkout(WorkoutDraft(entries = listOf(DraftEntry(oldId, name, "Ngực", listOf(10), 60))))
+        val before = controller.getWorkoutDetail(workout)
+        launch("detail/$oldId").use {
+            onView(withId(R.id.ex_delete)).perform(click())
+            onView(withId(R.id.ex_dialog_confirm)).perform(click())
+            val end = System.currentTimeMillis() + 5000
+            while (controller.getAllExercises().any { it.id == oldId } && System.currentTimeMillis() < end) Thread.sleep(50)
+            assertFalse(controller.getAllExercises().any { it.id == oldId })
+        }
+        launch("list").use { scenario ->
+            onView(withId(R.id.ex_add)).perform(click())
+            onView(withId(R.id.ex_name_input)).perform(replaceText(name), closeSoftKeyboard())
+            onView(withId(R.id.ex_muscle)).perform(click())
+            onView(withText("Ngực")).perform(click())
+            onView(withId(R.id.ex_save)).perform(click())
+            waitReady(scenario)
+            onView(withId(R.id.ex_list)).check(matches(isDisplayed()))
+            val newExercise = controller.getAllExercises().single { it.name == name }
+            assertTrue(newExercise.id > oldId)
+            assertEquals(before, controller.getWorkoutDetail(workout))
+        }
+    }
 }

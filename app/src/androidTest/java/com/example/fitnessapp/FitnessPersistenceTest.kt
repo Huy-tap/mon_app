@@ -101,4 +101,34 @@ class FitnessPersistenceTest {
         assertThrows(SQLiteConstraintException::class.java) { controller.insertExercise(exercise()) }
         assertEquals(1, controller.getAllExercises().size)
     }
+    @Test fun archivedNameCanBeAddedAgainWithoutChangingHistoryAfterReopen() {
+        val oldId = controller.insertExercise(exercise("Push Up"))
+        val workout = controller.saveWorkout(WorkoutDraft(entries = listOf(entry(oldId).copy(name = "Push Up"))))
+        val history = controller.getWorkoutDetail(workout)
+        val stats = controller.getMonthlyStats()
+        assertTrue(controller.deleteExercise(oldId))
+        val newId = controller.insertExercise(exercise("Push Up").copy(defaultSets = 5))
+        assertTrue(newId > oldId)
+        assertThrows(SQLiteConstraintException::class.java) { controller.insertExercise(exercise("Push Up")) }
+        db.close()
+        db = SQLiteDatabase.openDatabase(file.path, null, SQLiteDatabase.OPEN_READWRITE)
+        db.setForeignKeyConstraintsEnabled(true)
+        FitnessDatabase.migrate(db)
+        controller = FitnessController(db)
+        assertEquals(newId, controller.getAllExercises().single().id)
+        assertEquals(5, controller.getAllExercises().single().defaultSets)
+        assertEquals(history, controller.getWorkoutDetail(workout))
+        assertEquals(stats, controller.getMonthlyStats())
+        assertEquals(oldId, controller.getWorkoutDetail(workout)!!.items.single().exerciseId)
+    }
+    @Test fun renameToArchivedNameSucceedsButActiveNameStillConflicts() {
+        val archived = controller.insertExercise(exercise("Push Up"))
+        val current = controller.insertExercise(exercise("Bài khác"))
+        assertThrows(SQLiteConstraintException::class.java) { controller.updateExercise(exercise("Push Up").copy(id = current)) }
+        assertEquals("Bài khác", controller.getExerciseById(current)!!.name)
+        controller.deleteExercise(archived)
+        assertTrue(controller.updateExercise(exercise("Push Up").copy(id = current)))
+        assertEquals(current, controller.getAllExercises().single().id)
+        assertEquals("Push Up", controller.getAllExercises().single().name)
+    }
 }
