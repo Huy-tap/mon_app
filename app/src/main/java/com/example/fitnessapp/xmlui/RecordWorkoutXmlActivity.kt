@@ -53,6 +53,8 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
     private lateinit var footer: FrameLayout
     private var busyDialog: AlertDialog? = null
     private var activeDialog: Dialog? = null
+    private var resultState: Bundle? = null
+    private var renderedResultId: Long? = null
 
     // Quản lý thông báo banner popup khi xóa bài tập khỏi phiếu (Ảnh 1 & Ảnh 2)
     private var bannerDeleteMessage: String? = null
@@ -69,6 +71,7 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
         val dark = AppTheme.isDark(this)
         setTheme(if (dark) R.style.Theme_ExerciseXml_Dark else R.style.Theme_ExerciseXml)
         super.onCreate(savedInstanceState)
+        resultState = savedInstanceState?.getBundle("resultInputState")
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_record_workout_xml)
 
@@ -110,8 +113,35 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        captureResultInput()
+        outState.putBundle("resultInputState", resultState)
         outState.putBundle("recordState", model.saveState())
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onPause() {
+        captureResultInput()
+        super.onPause()
+    }
+
+    /** Giữ nguyên các ô đang nhập khi mở hướng dẫn hoặc Android tạo lại màn hình. */
+    private fun captureResultInput() {
+        val exerciseId = renderedResultId ?: return
+        if (model.screen != "result/$exerciseId") return
+        val rows = findViewById<LinearLayout>(R.id.result_sets_container) ?: return
+        resultState = Bundle().apply {
+            putLong("exerciseId", exerciseId)
+            putString("sets", findViewById<EditText>(R.id.result_sets_count).text.toString())
+            putStringArrayList("values", ArrayList((0 until rows.childCount).map {
+                rows.getChildAt(it).findViewById<EditText>(R.id.set_input_value).text.toString()
+            }))
+            putString("minutes", findViewById<EditText>(R.id.result_input_minutes).text.toString())
+            putString("seconds", findViewById<EditText>(R.id.result_input_seconds).text.toString())
+            putString("note", findViewById<EditText>(R.id.result_input_note).text.toString())
+            val error = findViewById<TextView>(R.id.result_error_text)
+            if (error.visibility == View.VISIBLE) putString("error", error.text.toString())
+            putInt("scroll", findViewById<ScrollView>(R.id.result_scroll).scrollY)
+        }
     }
 
     override fun onDestroy() {
@@ -346,6 +376,8 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
 
         val titleView = findViewById<TextView>(R.id.record_title)
         val currentScreen = model.screen
+        renderedResultId = null
+        if (!currentScreen.startsWith("result/")) resultState = null
 
         if (currentScreen != "record") {
             findViewById<View?>(R.id.record_floating_toast)?.visibility = View.GONE
@@ -545,20 +577,20 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
         }
 
         val existingEntry = model.findDraftEntry(exerciseId)
+        val savedInput = resultState?.takeIf { it.getLong("exerciseId") == exerciseId }
         val view = layoutInflater.inflate(R.layout.screen_enter_result_xml, content, false)
         content.addView(view)
+        renderedResultId = exerciseId
 
         view.findViewById<TextView>(R.id.result_exercise_name).text = exercise.name
         view.findViewById<TextView>(R.id.result_exercise_muscle).text = muscleLabel(exercise.muscleGroup)
 
         // Nút xem hướng dẫn
         view.findViewById<View>(R.id.result_btn_guide).setOnClickListener {
-            val desc = exercise.description.orEmpty().ifBlank { "Bài tập ${exercise.name} rèn luyện nhóm cơ ${muscleLabel(exercise.muscleGroup)}." }
-            AlertDialog.Builder(this)
-                .setTitle(exercise.name)
-                .setMessage(desc)
-                .setPositiveButton("Đóng", null)
-                .show()
+            captureResultInput()
+            startActivity(Intent(this, ExerciseXmlActivity::class.java)
+                .putExtra("route", "detail/${exercise.id}")
+                .putExtra(ExerciseXmlActivity.EXTRA_GUIDE_ONLY, true))
         }
 
         val setsCountInput = view.findViewById<EditText>(R.id.result_sets_count)
@@ -618,6 +650,20 @@ class RecordWorkoutXmlActivity : ComponentActivity() {
         }
 
         rebuildSetRows(defaultSets)
+
+        savedInput?.let { saved ->
+            val values = saved.getStringArrayList("values").orEmpty()
+            if (values.isNotEmpty()) rebuildSetRows(values.size)
+            values.forEachIndexed { index, value ->
+                setsContainer.getChildAt(index).findViewById<EditText>(R.id.set_input_value).setText(value)
+            }
+            setsCountInput.setText(saved.getString("sets"))
+            inputMinutes.setText(saved.getString("minutes"))
+            inputSeconds.setText(saved.getString("seconds"))
+            inputNote.setText(saved.getString("note"))
+            saved.getString("error")?.let { errorText.text = it; errorText.visibility = View.VISIBLE }
+            view.post { view.findViewById<ScrollView>(R.id.result_scroll).scrollTo(0, saved.getInt("scroll")) }
+        }
 
         // Lắng nghe khi người dùng đổi số hiệp
         setsCountInput.addTextChangedListener(object : TextWatcher {

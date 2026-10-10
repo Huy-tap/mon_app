@@ -38,6 +38,11 @@ import java.io.File
 
 /** Exercise management uses ordinary XML layouts and Android Views, with no Compose UI. */
 class ExerciseXmlActivity : ComponentActivity() {
+    companion object {
+        const val EXTRA_GUIDE_ONLY = "guideOnly"
+    }
+
+    private val guideOnly get() = intent.getBooleanExtra(EXTRA_GUIDE_ONLY, false)
     private lateinit var model: ExerciseXmlModel
     private lateinit var content: FrameLayout
     private lateinit var footer: FrameLayout
@@ -294,7 +299,8 @@ class ExerciseXmlActivity : ComponentActivity() {
     }
     private fun renderDetail() {
         val e = model.selected() ?: run { model.back(); return }
-        inflate(R.layout.screen_exercise_detail_xml, content); inflate(R.layout.exercise_footer_xml, footer)
+        inflate(R.layout.screen_exercise_detail_xml, content)
+        if (!guideOnly) inflate(R.layout.exercise_footer_xml, footer)
         val image = findViewById<ImageView>(R.id.ex_detail_image)
         image.visibility = if (MediaStorage.exists(e.instructionImage)) View.VISIBLE else View.GONE
         findViewById<View>(R.id.ex_detail_image_gap).visibility = image.visibility
@@ -313,6 +319,12 @@ class ExerciseXmlActivity : ComponentActivity() {
         text(R.id.ex_detail_description).apply { text = e.description; visibility = if (e.description.isNullOrBlank()) View.GONE else View.VISIBLE }
         click(R.id.ex_detail_image) { capturePosition(); model.preview(e.instructionImage, false) }
         click(R.id.ex_detail_video) { capturePosition(); model.preview(e.instructionVideo, true) }
+        if (guideOnly) {
+            text(R.id.ex_detail_missing).text = "Bài tập này chưa có ảnh hoặc video hướng dẫn."
+            text(R.id.ex_detail_note).text = "Đây là thông tin mặc định của bài tập. Quay lại Nhập kết quả để ghi kết quả thực tế."
+            restoreDetailScroll()
+            return
+        }
         text(R.id.ex_save).text = "Sửa bài tập"
         click(R.id.ex_save) { capturePosition(); model.navigate("edit/${e.id}") }
         findViewById<View>(R.id.ex_delete).visibility = View.VISIBLE
@@ -325,6 +337,9 @@ class ExerciseXmlActivity : ComponentActivity() {
             dialog.setContentView(view); dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.show(); dialog.window?.setLayout(minOf(resources.displayMetrics.widthPixels - dp(48), dp(420)), ViewGroup.LayoutParams.WRAP_CONTENT)
         }
+        restoreDetailScroll()
+    }
+    private fun restoreDetailScroll() {
         findViewById<ScrollView>(R.id.ex_scroll).post { findViewById<ScrollView?>(R.id.ex_scroll)?.scrollTo(0, model.detailScroll) }
     }
     private fun renderMedia() {
